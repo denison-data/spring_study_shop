@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:25px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_10.gif}">
+    </div>
+    <div style="display:block;overflow:hidden;padding-top:15px;">
+        <div style="text-align:right;padding-bottom:5px;">
+            &nbsp;
+<!--            <form name="FRM" method="get" action="./cs_main">-->
+<!--                <select name="titles" class="select">-->
+<!--                    <option value="subject" >제목</option>-->
+<!--                    <option value="contents" >내용</option>-->
+<!--                </select>-->
+<!--                <input  size="18" class="input_notice" name="search" type="text"  value="">-->
+<!--                <input  type="image" src="/img/button/check_bt.gif" alt="검색" />-->
+<!--            </form>-->
+        </div>
+    </div>
+    <div id ="Cartoon_view">
+        <div style="padding-bottom:10px;">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;" >
+                <tr>
+                    <td class="tr_view" align="left"><span style="margin-right:10px;"class="te_gn2">[<b>만화</b>] </span> {{boardData.subject}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_view" align="left">
+                        <div style="float:left;padding-left:10px;" class="te_do te_le sz_11">
+                            작성자 : <span class="te_en sz_11 te_gray">관리자</span></div>
+                        <div style="float:right;padding-right:10px;" class="te_do te_le sz_11">
+                            작성일 : <span class="te_en sz_11 te_gray">{{boardData.formattedDateTime}}</span></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_view"align="left" colspan="3">
+                        <div style="padding:15px; line-height:20px;" class="te_do te_gray04 sz_12" >
+                            <div v-html="processContents(boardData.contents)"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="width:740px;padding-top:10px;padding-bottom:20px;">
+            <!-- 여기부터 개발이 좀 체크해야될듯--->
+            <table>
+
+            </table>
+            <!-- 만화평 데이터 가져올것--->
+        </div>
+        <div style="padding-bottom:20px;text-align:right;"><a href="/board/club_main">목록</a></div>
+        <div>
+            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                    <td class="tr_list_01" align="center" width="70px"><span class="te_en">이전글</span></td>
+                    <td class="tr_list_01" align="left" v-if="boardData.previousData">
+                        <a :href="`/board/cartoon_v?no=${boardData.previousData.id}`">
+                            {{ boardData.previousData.subject }}
+                        </a>
+                    </td>
+                    <td class="tr_list_01" align="left" v-else>
+                        이전글이 없습니다
+                    </td>
+                    <td class="tr_list_01" align="center" width="100px">
+                        <span class="te_en te_le sz_11" v-if="boardData.previousData">
+                        {{boardData.previousData.formattedDate}}</span>
+                        <span class="te_en te_le sz_11" v-else>0000-00-00</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_list_02" align="center"><span class="te_en">다음글</span></td>
+                    <td class="tr_list_02" align="left" v-if="boardData.nextData">
+                        <a :href="`/board/cartoon_v?no=${boardData.nextData.id}`">
+                            {{ boardData.nextData.subject }}
+                        </a>
+                    </td>
+                    <td class="tr_list_02" align="left" v-else>
+                        다음글이 없습니다
+                    </td>
+                    <td class="tr_list_02" align="center">
+                        <span class="te_en te_le sz_11" v-if="boardData.nextData">
+                        {{boardData.nextData.formattedDate}}</span>
+                        <span class="te_en te_le sz_11" v-else>0000-00-00</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    new Vue({
+        el: '#Cartoon_view',
+        data: {
+            boardData : {},
+            //이전, 다음글
+            prevBoard: null,
+            nextBoard: null,
+            baseUrl: 'https://img.debco.link'
+
+        },
+        computed: {},
+        created : function() {
+           this.loadData();
+        },
+        methods: {
+            getBoardNo: function() {
+                const no = getQueryParam("no");
+                return no ? parseInt(no) : 1;
+            },
+            processContents: function(htmlContent){
+                if (!htmlContent) return '';
+                // 1. 유니코드 이스케이프 디코딩
+                var decodedContent = this.decodeUnicode(htmlContent);
+
+                // 2. 이미지 src에 도메인 추가
+                return this.addDomainToImgSrc(decodedContent);
+            },
+            // 유니코드 이스케이프 디코딩 (예: \u003C → <)
+            decodeUnicode: function(str) {
+                return str.replace(/\\u([\dA-F]{4})/gi,
+                    function(match, grp) {
+                        return String.fromCharCode(parseInt(grp, 16));
+                    });
+            },
+              // 이미지 src에 도메인 추가
+            addDomainToImgSrc: function(htmlContent) {
+                var baseUrl = this.baseUrl;
+
+                return htmlContent.replace(
+                    /<img([^>]*)src="([^"]*)"([^>]*)>/gi,
+                    function(match, before, src, after) {
+                        // 이미 전체 URL인 경우 변경하지 않음
+                        if (src.startsWith('http://') ||
+                            src.startsWith('https://') ||
+                            src.startsWith('//')) {
+                            return match;
+                        }
+
+                        // 상대 경로인 경우 도메인 추가
+                        var newSrc = src.startsWith('/') ?
+                            baseUrl + src :
+                            baseUrl + '/' + src;
+
+                        return '<img' + before + 'src="' + newSrc + '"' + after + '>';
+                    }
+                );
+            },
+            loadData: function() {
+                var vm = this;
+                var boardNo = this.getBoardNo();
+                this.incrementView(boardNo);
+                console.log(boardNo);
+                axios.get(`/api/board/cartoon/view?no=${boardNo}`)
+                .then(response => {
+                    if (response.data.data) {
+                        vm.boardData = response.data.data.board || response.data.data;
+                    } else {
+                        vm.boardData = response.data;
+                    }
+                    console.log(vm.boardData);
+                })
+                .catch(error => {
+                    console.error("데이터 로드 실패:", error);
+
+                });
+            },
+            incrementView : function(no) {
+                axios.post(`/api/board/cartoon/${no}/hit`)
+                .then(() => { console.log(`조회수 증가 완료 : ${no} 번`);})
+                .catch(error => { console.warn("조회수 증가 실패:", error);});
+            }
+        }
+    });
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</html>

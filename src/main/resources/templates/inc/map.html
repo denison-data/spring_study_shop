@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+    <div th:replace="layout/left :: left"></div>
+    <div style="padding-bottom:20px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_34.gif}">
+    </div>
+    <div style="text-align:center;"><img th:src="@{/img/common/map.jpg}">
+    </div>
+    <div th:replace="layout/bottom :: bottom"></div>
+    </body>
+</html>

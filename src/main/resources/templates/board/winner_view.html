@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:25px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_05.gif}">
+    </div>
+    <div style="display:block;overflow:hidden;padding-top:15px;" id="Board">
+        <div style="float:left;">
+            <div style="display: flex;">
+                <!-- 모든 a 태그를 나란히 배치 -->
+                <!-- 첫번째 탭 -->
+                <a th:href="@{/board/ev_main}">
+                    <img th:src="${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/ev_main')}"
+                         th:attr="data-normal=${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         data-hover="/img/common/tab_event_01_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 두번째 탭 -->
+                <a th:href="@{/board/review_main}">
+                    <img th:src="${currentPage.startsWith('/board/review_main') || currentPage.startsWith('/board/review_v') ? '/img/common/tab_event_02_over.gif' : '/img/common/tab_event_02.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/review_main')}"
+                         data-normal="/img/common/tab_event_02.gif"
+                         data-hover="/img/common/tab_event_02_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 세번째 탭 -->
+                <a th:href="@{/board/winner_main}">
+                    <img th:src="${currentPage.startsWith('/board/winner_main') || currentPage.startsWith('/board/winner_v') ? '/img/common/tab_noti_03_over.gif' : '/img/common/tab_noti_03.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/winner_main')}"
+                         data-normal="/img/common/tab_noti_03.gif"
+                         data-hover="/img/common/tab_noti_03_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 네번째 탭 -->
+                <a th:href="@{/product/social}">
+                    <img th:src="${currentPage.startsWith('/product/social') ? '/img/common/tab_noti_04_over.gif' : '/img/common/tab_noti_04.gif'}"
+                         th:data-active="${currentPage != null && currentPage.startsWith('/product/social')}"
+                         data-normal="/img/common/tab_noti_04.gif"
+                         data-hover="/img/common/tab_noti_04_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+            </div>
+        </div>
+
+        <div style="padding-bottom:10px;">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                <tr>
+                    <td class="tr_view" align="left"><span style="margin-right:10px;"class="te_gn2">[<b>이벤트 당첨자</b>] </span>  <?=$cut_titles?>
+                        <div style="float:right;padding-right:10px;" class="te_do te_le sz_11"></div></td>
+                </tr>
+                <tr>
+                    <td class="td_view" align="left">
+                        <div style="float:left;padding-left:10px;" class="te_do te_le sz_11">
+                            작성자 : <span class="te_en sz_11 te_gray"><?=substr($row[user_id],0,strlen($row[user_id])-3)."***";?></span></div>
+                        <div style="float:right;padding-right:10px;" class="te_do te_le sz_11">
+                            작성일 : <span class="te_en sz_11 te_gray"><?=date("Y-m-d H:i:s",$row['regdate'])?></span></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_view"align="left" colspan="3">
+                        <div style="padding:15px; line-height:20px;" class="te_do te_gray04 sz_12" >
+                            <?=$content_new?>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

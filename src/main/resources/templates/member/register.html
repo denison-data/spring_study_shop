@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+    <div th:replace="layout/left :: left"></div>
+    <div id="con">
+        <form th:action="@{/member/register}" method="post">
+            <div style="padding-bottom:15px;padding-top:20px;">
+                <img th:src="@{/img/common/tit_01.gif}">
+            </div>
+            <div style="padding-bottom:30px;"><img th:src="@{/img/common/member_01.gif}"></div>
+            <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j01.gif}">
+                <!-- 전체 동의 버튼 -->
+                <div class="agree-check">
+                    <label>
+                        <input type="checkbox" id="agreeAll"> 전체 약관에 모두 동의합니다
+                    </label>
+                </div>
+            </div>
+            <!-- 이용약관 동의 -->
+            <div class="terms-box">
+                <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j01.gif}"></div>
+                <div class="scroll-box" th:insert="inc/terms :: content"></div>
+                <div class="agree-check">
+                    <label><input type="checkbox" name="agreeTerms" required> 동의합니다</label>
+                </div>
+            </div>
+
+            <!-- 개인정보 처리방침 -->
+            <div class="terms-box">
+                <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j02.gif}"></div>
+                <div class="scroll-box" th:insert="inc/priv01 :: content"></div>
+                <div class="agree-check">
+                    <label><input type="checkbox" name="agreePrivacy" required> 동의합니다</label>
+                </div>
+            </div>
+
+            <!-- 개인정보 수집·이용 목적 -->
+            <div class="terms-box">
+                <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j03.gif}"></div>
+                <div class="scroll-box" th:insert="inc/priv02 :: content"></div>
+                <div class="agree-check">
+                    <label><input type="checkbox" name="agreePrivacy2" required> 동의합니다</label>
+                </div>
+            </div>
+
+            <!-- 보유 및 이용기간 -->
+            <div class="terms-box">
+                <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j04.gif}"></div>
+                <div class="scroll-box" th:insert="inc/priv03 :: content"></div>
+                <div class="agree-check">
+                    <label><input type="checkbox" name="agreePrivacy3" required> 동의합니다</label>
+                </div>
+            </div>
+            <div th:if="${error}" style="color:red; margin-bottom:10px;">
+                <p th:text="${error}"></p>
+            </div>
+            <div style="height:20px">&nbsp;</div>
+            <div class="btn-box">
+                <button type="submit" class="btn-primary">다음 단계</button>
+            </div>
+
+        </form>
+        <script>
+            const agreeAll = document.getElementById("agreeAll");
+            const checkboxes = document.querySelectorAll(".agree-check input[type='checkbox'][name]");
+
+            // 전체 동의 클릭 시 → 개별 체크박스 모두 체크/해제
+            agreeAll.addEventListener("change", function() {
+              checkboxes.forEach(cb => cb.checked = agreeAll.checked);
+            });
+
+            // 개별 체크박스 상태 변경 시 → 전체 동의 체크박스 상태 갱신
+            checkboxes.forEach(cb => {
+              cb.addEventListener("change", function() {
+                // 모든 개별 체크박스가 체크되어 있으면 전체 동의도 체크
+                agreeAll.checked = Array.from(checkboxes).every(c => c.checked);
+              });
+            });
+        </script>
+
+        <style>
+            /* 전체 동의 및 개별 동의 텍스트 스타일 */
+            .agree-check label {
+              font-family: 'Noto Sans KR', '맑은 고딕', Arial, sans-serif; /* 한글 웹폰트 */
+              font-size: 14px;          /* 폰트 크기 통일 */
+              font-weight: 500;         /* 약간 두께감 */
+              color: #333;              /* 진한 회색으로 가독성 확보 */
+              line-height: 1.6;         /* 줄 간격 넉넉하게 */
+              cursor: pointer;          /* 마우스 올리면 클릭 가능 느낌 */
+            }
+
+            /* 체크박스와 텍스트 간격 */
+            .agree-check input[type="checkbox"] {
+              margin-right: 8px;
+              vertical-align: middle;
+            }
+
+            .terms-box {
+              margin-bottom: 30px;
+              padding: 15px;
+              border: 1px solid #ddd;
+              background: #fafafa;
+            }
+
+            .scroll-box {
+              border: 1px solid #ccc;
+              padding: 10px;
+              height: 200px;       /* 본문이 길어도 일정 높이만 차지 */
+              overflow-y: auto;    /* 긴 내용은 스크롤로 처리 */
+              background: #fff;
+            }
+
+            .agree-check {
+              margin-top: 10px;
+              display: block;      /* 독립 블록으로 표시 */
+              clear: both;         /* float 영향 제거 */
+            }
+
+            .agree-check input[type="checkbox"] {
+              margin-right: 5px;
+            }
+
+            .btn-primary {
+              padding: 10px 20px;
+              background: #007bff;
+              color: #fff;
+              border: none;
+              border-radius: 4px;
+            }
+
+            .btn-box {
+              text-align: right; /* 버튼을 오른쪽으로 정렬 */
+            }
+
+        </style>
+        <!--
+        <form method="post" action="mem_p_01.php" name="Join"  target="iframe" id="Join">
+        <input type="hidden" name="Mode" value="Join">
+        <div style="padding-bottom:15px;padding-top:20px;">
+            <img th:src="@{/img/common/tit_01.gif}">
+        </div>
+        <div style="padding-bottom:30px;"><img th:src="@{/img/common/member_01.gif}"></div>
+        <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j01.gif}"></div>
+        <div style="padding-bottom:30px;">
+            <table th:style="'background:url('+@{/img/common/join_back.gif}+') no-repeat;height:255px;width:750px;vertical-align:top;'">
+                <tr><td valign="top;"><div style="padding:10px;height:230px;">
+                     <iframe style="width:725px; height:100%; border:1px solid #cccccc;" th:src="@{/inc/terms}" frameborder="0px"></iframe></div>
+                </td></tr>
+                <tr><td style="padding:15px 0px;font-size:11px;color:#666;"><input type="checkbox" name="agree1" id="agree1" value="1"  >이용약관에 약관에 동의합니다 </input>&nbsp;&nbsp;&nbsp;</td></tr>
+            </table>
+        </div>
+
+        <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j02.gif}"></div>
+        <div style="padding-bottom:20px;">
+            <table style="background:url(/img2/join_back.gif) no-repeat;height:255px;width:750px;vertical-align:top;">
+                <tr><td valign="top;"><div style="padding:10px;height:230px;width:720px;">
+                    <iframe style="width:725px; height:100%;border:1px solid #cccccc;"th:src="@{/inc/prev1}" frameborder="0px"></iframe></div></td></tr>
+                <tr><td style="padding:15px 0px;font-size:11px;color:#666;"><input type="checkbox" name="agree2" id="agree2" value="1" >개인정보취급방침 약관에 동의합니다 </input>&nbsp;&nbsp;&nbsp;</td></tr>
+            </table>
+        </div>
+
+        <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j03.gif}"></div>
+        <div style="padding-bottom:20px;">
+            <table style="background:url(/img2/join_back.gif) no-repeat;height:255px;width:750px;vertical-align:top;">
+                <tr><td valign="top;"><div style="padding:10px;height:230px;width:720px;">
+                    <iframe style="width:725px; height:100%;border:1px solid #cccccc;"th:src="@{/inc/prev2}" frameborder="0px"></iframe></div></td></tr>
+                <tr><td style="padding:15px 0px;font-size:11px;color:#666;"><input type="checkbox" name="agree3" id="agree3" value="1" >개인정보 수집 및 이용목적에 동의합니다 </input>&nbsp;&nbsp;&nbsp;</td></tr>
+            </table>
+        </div>
+
+        <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j04.gif}"></div>
+        <div style="padding-bottom:20px;">
+            <table style="background:url(/img2/join_back.gif) no-repeat;height:255px;width:750px;vertical-align:top;">
+                <tr><td valign="top;"><div style="padding:10px;height:230px;width:720px;">
+                    <iframe style="width:725px; height:100%;border:1px solid #cccccc;"th:src="@{/inc/prev3}" frameborder="0px"></iframe></div></td></tr>
+                <tr><td style="padding:15px 0px;font-size:11px;color:#666;"><input type="checkbox" name="agree4" id="agree4" value="1" >수집한 개인정보의 보유 및 이용기간 약관에 동의합니다 </input>&nbsp;&nbsp;&nbsp;</td></tr>
+            </table>
+        </div>
+
+        <div style="text-align:center;"><a href="#" onclick="javascript:member_agree_check1();"><img th:src="@{/img/common/btn_agree.gif}" style="margin-right:5px;"></a><a href="javascript:history.go(-1);" ><img th:src="@{/img/common/btn_agreenot.gif}"></a>
+        </div>
+        </form> --->
+    </div>
+
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

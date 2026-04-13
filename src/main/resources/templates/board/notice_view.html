@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:25px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_06.gif}">
+    </div>
+    <div style="display:block;overflow:hidden;padding-top:15px;">
+        <div style="text-align:right;padding-bottom:5px;">
+            <form name="FRM" method="get" action="./cs_main">
+                <select name="titles" class="select">
+                    <option value="subject" >제목</option>
+                    <option value="contents" >내용</option>
+                </select>
+                <input  size="18" class="input_notice" name="search" type="text"  value="">
+                <input  type="image" src="/img/button/check_bt.gif" alt="검색" />
+            </form>
+        </div>
+    </div>
+    <div style="padding-bottom:10px;">
+        <table cellspacing="0"cellpadding="0" border="0" style="width:100%;" id ="notice_view">
+            <tr>
+                <td class="tr_view" align="left">{{boardData.subject}}</td>
+            </tr>
+            <tr>
+                <td class="td_view" align="left">
+                    <div style="float:right;padding-right:10px;" class="te_do te_le sz_11">
+                        등록일 : <span class="te_en sz_11 te_gray">{{boardData.formattedDateTime}}</span><img src="/img/common/line.gif" style="margin-left:5px;margin-right:5px;">조회수 : <span class="te_en te_gray">{{boardData.hit}}</span></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td_view"align="left" colspan="3">
+                    <div style="padding:15px;line-height:16px;" class="te_do te_gray2 sz_12"  v-html="boardData.contents"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+<!--    ?page=${page}&n_Keyword=${keyword}-->
+    <div style="padding-bottom:20px;text-align:right;"><a th:href="@{/board/cs_main}">목록</a></div>
+<script>
+function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+ new Vue({
+    el: '#notice_view',
+    data: {
+        boardData : {},
+        //이전, 다음글
+        prevBoard: null,
+        nextBoard: null,
+
+    },
+    computed: {},
+    created : function() {
+        this.loadData();
+    },
+    methods: {
+        getBoardNo: function() {
+            const no = getQueryParam("no");
+            return no ? parseInt(no) : 1;
+        },
+
+        loadData: function() {
+            var vm = this;
+            var boardNo = this.getBoardNo();
+
+            this.incrementView(boardNo);
+
+            console.log("게시물 번호:", boardNo);
+
+            axios.get(`/api/board/notice/view?no=${boardNo}`)
+                .then(response => {
+                    if (response.data.data) {
+                        vm.boardData = response.data.data.board || response.data.data;
+                    } else {
+                        vm.boardData = response.data;
+                    }
+                    console.log(vm.boardData);
+                })
+                .catch(error => {
+                    console.error("데이터 로드 실패:", error);
+
+                });
+
+        },
+        incrementView : function(no) {
+            axios.post(`/api/board/notice/${no}/hit`)
+            .then(() => { console.log(`조회수 증가 완료 : ${no} 번`);})
+            .catch(error => { console.warn("조회수 증가 실패:", error);});
+        }
+    }
+});
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

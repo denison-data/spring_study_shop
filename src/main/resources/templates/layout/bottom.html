@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="bottom">
+
+<div id="footer" >
+    <div style="height:30px;background-color:#d2d2d2;border:1px solid#bdbdbd;padding-left:20px;display:block; overflow:hidden;vertical-align:middle;">
+        <ul>
+            <li style="float:left;padding-top:3px;">
+                <a th:href="@{/inc/company}"><img th:src="@{/img/common/mn_f01.gif}" align="absmiddle"></a>
+                <img src="/img/common/line_06.gif"align="absmiddle">
+                <a href="/inc/about01"><img th:src="@{/img/common/mn_f02.gif}" align="absmiddle"></a>
+                <img src="/img/common/line_06.gif"align="absmiddle">
+                <a href="/inc/about02"><img th:src="@{/img/common/mn_f03.gif}" align="absmiddle"></a>
+                <img src="/img/common/line_06.gif"align="absmiddle">
+                <a href="/board/cs_main"><img th:src="@{/img/common/mn_f04.gif}" align="absmiddle"></a>
+                <img src="/img/common/line_06.gif"align="absmiddle">
+                <a href="/inc/map"><img src="/img/common/mn_f05.gif" align="absmiddle"></a>
+                <img src="/img/common/line_06.gif"align="absmiddle">
+                <a href="javascript:;"  onclick="qpop('/inc/partnership.php','jehu',550,890)" ><img src="/img/common/mn_f06.gif" align="absmiddle"></a>
+            </li>
+            <li style="float:right;padding-right:10px;padding-top:3px;"><a href="#"><img src="/img/common/btn_top.gif"></a></li>
+        </ul>
+    </div>
+    <div style="width:100%;display:block; overflow:hidden;padding-top:15px;padding-bottom:20px;">
+        <ul>
+            <li style="float:left;"><img src="/img/common/footer_01.gif"></li>
+            <li style="float:right;vertical-align:bottom;"><a href="javascript:go_check()" ><img src="/img/common/footer_02.gif"></a></li>
+        </ul>
+    </div>
+
+</div>
+</div>
+</div>
+<form name="shop_check" method="post" action="https://admin.kcp.co.kr/Modules/escrow/kcp_pop.jsp">
+    <input type="hidden" name="site_cd" value="F1794">
+</form>
+<script>
+    function qpop(url, name, w, h)
+    {
+        var window_left = (screen.width-640)/2;
+        var window_top = (screen.height-480)/2;
+        window.open(url, name,"width="+w+",height="+h+",status=no,scrollbars=no,top="+window_top+", left="+window_left+"");
+    }
+</script>
+<script language="JavaScript">
+    function go_check()
+    {
+        var status  = "width=500 height=450 menubar=no,scrollbars=no,resizable=no,status=no";
+        var obj     = window.open('', 'kcp_pop', status);
+
+        document.shop_check.method = "post";
+        document.shop_check.target = "kcp_pop";
+        document.shop_check.action = "https://admin.kcp.co.kr/Modules/escrow/kcp_pop.jsp";
+
+        document.shop_check.submit();
+    }
+</script>
+</body>
+</html>
+</div>

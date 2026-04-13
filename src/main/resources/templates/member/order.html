@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:15px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_24.gif}">
+    </div>
+    <div style="padding-bottom:20px;">
+        <table cellspacing="0" cellpadding="0" border="0" style="width:100%;padding:15px;background-color:#f3f7e8; border:3px solid #b7d166;">
+            <tr><td>
+                <div>
+                    <ul class="te_do te_le sz_12 te_gn4"style="line-height:22px;te_gn3">
+                        <li> .  주문하신 내역은 <b><span class="te_en">1</span>년간 보존</b>되며 확인하실 수 있습니다.</li>
+                        <li> .  주문번호를 클릭하시면 주문내역을 확인하실 수 있으며, 상품명 또는 상품 이미지를 클릭하시면 상품에 대한 상세정보를 보실 수 있습니다.</li>
+                        <li> .  결제 시 <span class="te_en">Point</span>, 쿠폰으로 결제하시면 <span class="te_en">Point</span>, 쿠폰 금액을 제외된 가격으로 표시 됩니다.</li>
+                        <li> .  <span class="te_en">Point</span>, 쿠폰 사용에 대한 결제내역은 마이 포인트&쿠폰에서 확인하실 수 있습니다.</li>
+                        <li> .  생생체험후기 등록시 200포인트가 지급됩니다.</li>
+                        <li> .  우수 구매 후기 채택시 500포인트가 지급됩니다.</li>
+                        <li> .  한줄 상품평 등록시 10포인트가 지급됩니다.</li>
+                    </ul>
+                </div>
+            </td></tr>
+        </table>
+    </div>
+    <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_c01.gif}"></div>
+    <div style="padding-bottom:15px;">
+        <form name="FRM" method="get">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                <tr><td colspan="2" height="1px" bgcolor="#82b644"></td></tr>
+                <tr>
+                    <td class="tr_001" width="120px">조회기간</td>
+                    <td class="td_001">
+                        <a href="javascript:search_date('1month')"><img src="/img/mypage/1month.jpg" /></a>
+                        <a href="javascript:search_date('3month')"><img src="/img/mypage/3month.jpg" /></a>
+                        <a href="javascript:search_date('6month')"><img src="/img/mypage/6month.jpg" /></a>
+                        <a href="javascript:search_date('1year')"><img src="/img/mypage/1years.jpg" /></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_002">일자별 조회</td>
+                    <td class="td_002">
+
+                        <!-- 시작일 -->
+                        <select name="Year1" class="select">
+                            <th:block th:each="y : ${#numbers.sequence(1930, #dates.year(#dates.createNow()))}">
+                                <option th:value="${y}"
+                                        th:text="${y}"
+                                        th:selected="${Year1 != null and y == Year1}"></option>
+                            </th:block>
+                        </select> 년
+
+                        <select name="Mon1" class="select">
+                            <th:block th:each="m : ${#numbers.sequence(1,12)}">
+                                <option th:value="${#numbers.formatInteger(m,2)}"
+                                        th:text="${#numbers.formatInteger(m,2)}"
+                                        th:selected="${Mon1 != null and #numbers.formatInteger(m,2).equals(Mon1)}"></option>
+                            </th:block>
+                        </select> 월
+
+                        <select name="Day1" class="select">
+                            <th:block th:each="d : ${#numbers.sequence(1,31)}">
+                                <option th:value="${#numbers.formatInteger(d,2)}"
+                                        th:text="${#numbers.formatInteger(d,2)}"
+                                        th:selected="${Day1 != null and #numbers.formatInteger(d,2).equals(Day1)}"></option>
+                            </th:block>
+                        </select> 일 ~
+
+                        <!-- 종료일 -->
+                        <select name="Year2" class="select">
+                            <th:block th:each="y : ${#numbers.sequence(1930, #dates.year(#dates.createNow()))}">
+                                <option th:value="${y}"
+                                        th:text="${y}"
+                                        th:selected="${Year2 != null and y == Year2}"></option>
+                            </th:block>
+                        </select> 년
+
+                        <select name="Mon2" class="select">
+                            <th:block th:each="m : ${#numbers.sequence(1,12)}">
+                                <option th:value="${#numbers.formatInteger(m,2)}"
+                                        th:text="${#numbers.formatInteger(m,2)}"
+                                        th:selected="${Mon2 != null and #numbers.formatInteger(m,2).equals(Mon2)}"></option>
+                            </th:block>
+                        </select> 월
+
+                        <select name="Day2" class="select">
+                            <th:block th:each="d : ${#numbers.sequence(1,31)}">
+                                <option th:value="${#numbers.formatInteger(d,2)}"
+                                        th:text="${#numbers.formatInteger(d,2)}"
+                                        th:selected="${Day2 != null and #numbers.formatInteger(d,2).equals(Day2)}"></option>
+                            </th:block>
+                        </select> 일
+
+                        <input type="image" src="/img/button/check_bt.gif" alt="조회" width="34" height="17" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div style="padding-bottom:10px;">
+        <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+            <tr>
+                <td class="tr_01" align="center">주문번호</td>
+                <td class="tr_01" align="center">이미지</td>
+                <td class="tr_01" align="center">상품명</td>
+                <td class="tr_01" align="center">포인트 &쿠폰</td>
+                <td class="tr_01" align="center">주문가격</td>
+                <td class="tr_01" align="center">입금구분</td>
+                <td class="tr_01" align="center">현재상태</td>
+                <td class="tr_01" align="center">체험후기</td>
+            </tr>
+
+            <tr>
+                <td class="td_01" colspan="8" align="center"><b>데이터가 조회가 되지 않았습니다</b></td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

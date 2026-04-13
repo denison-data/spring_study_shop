@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div id="Product">
+        <div style="padding-bottom:25px;padding-top:20px;">
+            <img th:src="@{/img/common/tit_08.gif}">
+        </div>
+        <div style="display:block;overflow:hidden;padding-top:10px;">
+            <div style="text-align:right;padding-bottom:5px;">
+                <form name="FRM" method="get">
+                    <select name="title" class="select" v-model="searchParams.title">
+                        <option value="subject"  :selected="(searchParams.title === 'subject') || (searchParams.title === null)">제목</option>
+                        <option value="contents"  :selected="searchParams.title === 'contents'">내용</option>
+                        <!--<option>작성자</option>-->
+                    </select>
+                    <input  size="18" class="input_notice" name="search" type="text" v-model="searchParams.search">
+                    <input  type="image" th:src="@{/img/button/check_bt.gif}" alt="검색" />
+                </form>
+            </div>
+            <div style="padding-bottom:10px;">
+                <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                    <tr>
+                        <td class="tr_01" width="40px"  align="center" >번호</td>
+                        <td class="tr_01" width="130px">구분</td>
+                        <td class="tr_01">제목</td>
+                    </tr>
+                    <tr v-if="boardList.length === 0">
+                       <td colspan="3" height="1px"  class="td_002" align="center">조회된 데이터가 없습니다</td>
+                    </tr>
+                    <!-- 데이터 있을 때 -->
+                    <template v-else>
+                        <template v-for="(item, index) in boardList">
+                            <!-- 질문 행 (기존 구조 그대로) -->
+                            <tr :key="item.no">
+                                <td class="td_002" align="center">
+                                <span class="te_en">
+                                    {{ totalElements - ((currentPage - 1) * pageSize + index) }}
+                                </span>
+                                </td>
+                                <td class="td_002" align="left" width="80px">{{ item.boonru }}</td>
+                                <td class="td_002" align="left">
+                                    <a class="tb_text" href="javascript:void(0)"
+                                       @click="toggleBoard(index)">
+                                        {{ item.subject }}
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <!-- 답변 행 (새로 추가 - PHP의 div_<?=$i?>와 동일) -->
+                            <tr v-if="item.isOpen" :key="'detail-' + item.no"
+                                style="background-color: #f9f9f9;">
+                                <td colspan="3" class="td_002">
+                                    <div class="detail-content">
+                                        <div class="contents">
+                                            <div v-html="item.contents"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                </table>
+            </div>
+            <div style="padding-top:10px; padding-bottom:20px;text-align:center;">
+                <!-- 페이징 처리 -->
+                <div class="page" v-if="totalPages > 0">
+                    <p>
+                        <!-- 이전 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === 1}"
+                           @click="changePage(currentPage - 1)"
+                           v-if="currentPage > 1">
+                            &lt;
+                        </a>
+
+                        <!-- 페이지 번호들 -->
+                        <a href="javascript:void(0)"
+                           v-for="pageNum in getPageNumbers()"
+                           :key="pageNum"
+                           :class="{'on': pageNum === currentPage}"
+                           @click="changePage(pageNum)">
+                            {{ pageNum }}
+                        </a>
+
+                        <!-- 다음 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === totalPages}"
+                           @click="changePage(currentPage + 1)"
+                           v-if="currentPage < totalPages">
+                            &gt;
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/libs/js/cs_board.js"></script>
+<script>
+    load("Product", "prod");
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

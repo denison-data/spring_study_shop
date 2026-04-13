@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+    <form method="post" name="dForms">
+        <input type="hidden" name="lists">
+    </form>
+
+    <div id="main">
+        <div id="app">
+            <div th:replace="createfiles/main/Best_10 :: Best_10"></div>
+                <div style="padding-bottom:8px;padding-top:30px;">
+                    <span class="te_na te_gray te_le te_b sz_15">와이즈 BEST 상품</span>
+                    <span class="te_na te_le te_gray sz_12">총 <span class="te_en te_b sz_13 te_og">{{totalElements}}</span>개 상품이 판매중입니다</span>
+                </div>
+                <div id="sort-buttons" th:style="'background:url('+@{/img/common/bg_aa.gif}+') repeat-x;height:33px;width:740px;'">
+                    <div style="padding-top:5px;text-align:left;padding-left:15px;vertical-align:top;">
+                        <a href="javascript:;" @click="changeSort('CT')">
+                            <img :src="lists === 'CT' ? '/img/common/sort_01_on.gif' : '/img/common/sort_01_off.gif'">
+                        </a>
+                        <img src="/img/common/sort_line.gif">
+
+                        <a href="javascript:;" @click="changeSort('WD')">
+                            <img :src="lists === 'WD' || !lists ? '/img/common/sort_02_on.gif' : '/img/common/sort_02_off.gif'">
+                        </a>
+                        <img src="/img/common/sort_line.gif">
+                        <img src="/img/common/sort_03_off.gif">
+
+                        <a href="javascript:;" @click="changeSort('RP')">
+                            <img :src="lists === 'RP' ? '/img/common/sort_03_on.gif' : '/img/common/sort_03_off.gif'">
+                        </a>
+                        <img src="/img/common/sort_line.gif">
+
+                        <a href="javascript:;" @click="changeSort('TP')">
+                            <img :src="lists === 'TP' ? '/img/common/sort_04_on.gif' : '/img/common/sort_04_off.gif'">
+                        </a>
+                    </div>
+                </div>
+            <table width="740px" cellspacing="0" cellpadding="0" border="0" style="margin-top:25px;">
+                <template v-for="(row, rowIndex) in chunkedProducts">
+                    <!-- 상품 행 -->
+                    <tr :key="'row-' + rowIndex">
+                        <td v-for="(product, colIndex) in row" :key="colIndex">
+                            <div class="main_ch">
+                                <ul>
+                                    <li class="ch_btn">
+                                        <!-- 버튼 영역 -->
+                                    </li>
+                                    <a :href="`/product/detail?code=${product.code}&Cat_Content=${product.category_code}`" class="list">
+                                        <li class="ch_img">
+                                            <img :src="`/img/product/${product.code}/${product.smallPicture}`"
+                                                 :alt="product.name"
+                                                 style="border:1px solid #e2e3e5;width:158px;height:160px;">
+                                        </li>
+                                        <li class="ch_text">
+                                            {{ product.name }}<br>{{ product.mdName }}
+                                        </li>
+                                        <li class="price_01">
+                                              <span class="te_en">
+                                                {{ formatPrice(product.option_array && product.option_array.length > 0
+                                                  ? product.option_array[0].realPrice
+                                                  : 0) }}원
+                                              </span>
+                                        </li>
+                                        <li class="price_02">
+                                              <span class="te_en">
+                                                {{ formatPrice(product.option_array && product.option_array.length > 0
+                                                  ? product.option_array[0].guestPrice
+                                                  : 0) }}
+                                              </span>원
+                                            <img src="/img/common/icon_mu.gif" style="margin-left:10px;margin-right:3px;">
+                                        </li>
+                                    </a>
+                                </ul>
+                            </div>
+                        </td>
+                        <!-- 빈 칸 채우기 -->
+                        <td v-for="n in (4 - row.length)" :key="'empty-' + n" width="188">&nbsp;</td>
+                    </tr>
+
+                    <tr v-if="(rowIndex >= 0)" :key="'spacer-' + rowIndex">
+                        <td colspan="4" style="height:30px; background:#f9f9f9;">&nbsp;</td>
+                    </tr>
+                </template>
+            </table>
+
+            <div style="padding-top:10px; padding-bottom:20px;text-align:center;">
+                <!-- 페이징 처리 -->
+                <div class="page" v-if="totalPages > 0">
+                    <p>
+                        <!-- 이전 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === 1}"
+                           @click="changePage(currentPage - 1)"
+                           v-if="currentPage > 1">
+                            &lt;
+                        </a>
+
+                        <!-- 페이지 번호들 -->
+                        <a href="javascript:void(0)"
+                           v-for="pageNum in getPageNumbers()"
+                           :key="pageNum"
+                           :class="{'on': pageNum === currentPage}"
+                           @click="changePage(pageNum)">
+                            {{ pageNum }}
+                        </a>
+
+                        <!-- 다음 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === totalPages}"
+                           @click="changePage(currentPage + 1)"
+                           v-if="currentPage < totalPages">
+                            &gt;
+                        </a>
+                    </p>
+                </div>
+            </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            products: [],
+            totalPages: 0,
+            pageSize: 10,
+            currentPage: 1,
+            totalElements: 0,
+            setPage: 5,
+            lists: 'CT' // 기본 정렬 기준
+        },
+        computed: {
+            chunkedProducts() {
+                const chunks = [];
+                for (let i = 0; i < this.products.length; i += 4) {
+                    chunks.push(this.products.slice(i, i + 4));
+                }
+                return chunks;
+            }
+        },
+
+        methods: {
+            fetchProducts( page = 1, size = 16) {
+                // lists 값에 따라 sort 파라미터 결정
+                const sortMap = {
+                    CT: 'id,DESC',
+                    WD: 'name,ASC',
+                    RP: 'price,DESC',
+                    TP: 'price,ASC'
+                };
+                const sort = sortMap[this.lists] || 'id,DESC';
+                const url = `/api/product/best_product?page=${page}&size=${size}&sort=${sort}`;
+                console.log(url);
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        this.products = data.content;
+                        this.currentPage = data.currentPage || 1;
+                        this.totalPages = data.totalPages || 0;
+                        this.totalElements = data.totalElements || 0;
+                        console.log(this.totalElements);
+                });
+            },
+            changeSort(val) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const catCode = urlParams.get('Cat_Content') || (urlParams.get('Types') || 'W_F_cate1'); // 기본값
+                this.lists = val;
+                this.fetchProducts(catCode); // keyword는 상황에 맞게 전달
+            },
+            formatPrice(value) {
+                return new Intl.NumberFormat().format(value);
+            },
+            // 페이지 변경
+            changePage(page) {
+                if (page < 1 || page > this.totalPages || page === this.currentPage) {
+                    return;
+                }
+                this.fetchProducts(page);
+                // 페이지 상단으로 스크롤
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+            getPageNumbers() {
+                const pageGroupSize = 16; // PHP의 bbs_page_scale
+                let pageStart = Math.floor(this.currentPage / pageGroupSize) * pageGroupSize + 1;
+
+                if ((this.currentPage % pageGroupSize) === 0) {
+                    pageStart -= pageGroupSize;
+                }
+
+                const pageEnd = Math.min(pageStart + pageGroupSize - 1, this.totalPages);
+                const pages = [];
+
+                for (let i = pageStart; i <= pageEnd; i++) {
+                    pages.push(i);
+                }
+
+                return pages;
+            },
+        },
+        mounted() {
+            this.fetchProducts();
+        }
+    })
+</script>
+
+    <div id="right" th:replace="createfiles/product_right :: product_right"></div>
+    <div th:replace="layout/bottom :: bottom"></div>
+</html>

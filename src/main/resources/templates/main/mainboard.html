@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="mainboard">
+    <script type="text/javascript">
+
+        function goMore(url) {
+            parent.document.location.href=url;
+        }
+        function displayOn(obj) {
+
+            document.getElementById(obj).style.display='';
+
+        }
+        function displayOff(obj) {
+
+            document.getElementById(obj).style.display='none';
+        }
+
+    </script>
+    <table cellspacing="0" cellpadding="0" border="0"  id="Notice" style="display:;">
+        <tr>
+            <td height="24px">
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_01_over.gif}" onmouseover=" displayOn('Notice');displayOff('Han');displayOff('Faq');"></a>
+            </td>
+            <td>
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_02.gif}" onmouseover="displayOff('Notice');displayOn('Han');displayOff('Faq');"></a>
+            </td>
+            <td>
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_03.gif}" onmouseover="displayOff('Notice');displayOff('Han');displayOn('Faq');"></a>
+            </td>
+        </tr>
+        <tr><td colspan="3">
+            <div style="width:100%;text-align:center;">
+                <div id="total"style="width:349px;text-align:center;padding-top:20px;padding-left:20px;padding-right:20px;">
+                    <ul id="list_view1">
+                    </ul>
+                </div>
+            </div>
+        </td>
+        </tr>
+    </table>
+    <table cellspacing="0" cellpadding="0" border="0"  id="Han" style="display:none;">
+        <tr>
+            <td height="24px">
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_01.gif}" onmouseover=" displayOn('Notice');displayOff('Han');displayOff('Faq');"></a>
+            </td>
+            <td>
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_02_over.gif}" onmouseover="displayOff('Notice');displayOn('Han');displayOff('Faq');"></a>
+            </td>
+            <td>
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_03.gif}" onmouseover="displayOff('Notice');displayOff('Han');displayOn('Faq');"></a>
+            </td>
+        </tr>
+        <tr><td colspan="3">
+            <div style="width:100%;text-align:center;">
+                <div id="total"style="width:349px;text-align:center;padding-top:20px;padding-left:20px;padding-right:20px;">
+                    <ul id="list_view2">
+                    </ul>
+                </div>
+            </div>
+        </td>
+        </tr>
+    </table>
+    <table cellspacing="0" cellpadding="0" border="0"  id="Faq" style="display:none;">
+        <tr>
+            <td height="24px">
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_01.gif}" onmouseover=" displayOn('Notice');displayOff('Han');displayOff('Faq');"></a>
+            </td>
+            <td>
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_02.gif}" onmouseover="displayOff('Notice');displayOn('Han');displayOff('Faq');"></a>
+            </td>
+            <td>
+                <a onfocus="this.blur()"><img th:src="@{/img/common/tab_03_over.gif}" onmouseover="displayOff('Notice');displayOff('Han');displayOn('Faq');"></a>
+            </td>
+        </tr>
+        <tr><td colspan="3">
+            <div style="width:100%;text-align:center;">
+                <div id="total"style="width:349px;text-align:center;padding-top:20px;padding-left:20px;padding-right:20px;">
+                    <ul id="list_view3">
+                    </ul>
+                </div>
+            </div>
+        </td>
+        </tr>
+    </table>
+    <script>
+ // API URL 매핑
+const apiMap = {
+    'list_view1': '/api/board/main_notice',
+    'list_view2': '/api/board/main_goodreview',
+    'list_view3': '/api/board/main_faq'
+};
+// 각 ul에 Vue 인스턴스 생성
+Object.keys(apiMap).forEach(listId => {
+    new Vue({
+        el: `#${listId}`,
+        template: `
+            <div>
+                <li class="mnnot_list" v-if="items.length === 0">
+                    등록된 내용이 없습니다.
+                </li>
+                <li v-else v-for="item in items" :key="item.no" class="mnnot_list" align="left">
+                    <a :href="getLink(item)" class="mn_list">
+                        {{ cutString(item.subject, 30, '...') }}
+                        <span class="te_en te_gray3 sz_11" style="margin-left:10px;">
+                            {{ formatDate(item.wdate || item.recdate) }}
+                        </span>
+                    </a>
+                </li>
+            </div>
+        `,
+        data: {
+            items: [],
+            loading: true
+        },
+        mounted() {
+            axios.get(apiMap[listId])
+                .then(res => {
+                    if (res.data.success && res.data.data) {
+                        this.items = res.data.data;
+                    }
+                })
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+        methods: {
+            cutString(str, length, suffix = "...") {
+                if (!str) return '';
+                return str.length > length ?
+                    str.substring(0, length) + suffix : str;
+            },
+            formatDate(dateValue) {
+                if (!dateValue) return '';
+                // Unix timestamp인 경우
+                if (/^\d+$/.test(dateValue)) {
+                    const date = new Date(dateValue * 1000);
+                    return date.toISOString().split('T')[0];
+                }
+                // 이미 문자열인 경우
+                return dateValue.split(' ')[0];
+            },
+            getLink(item) {
+                // listId에 따라 다른 링크 생성
+                const links = {
+                    'list_view1': `/board/cs_v?no=${item.no}`,
+                    'list_view2': `/board/review_v?no=${item.no}`,
+                    'list_view3': `/board/cs_etc_main`
+                };
+                return links[listId] || '#';
+            }
+        }
+    });
+});
+    </script>
+</th:block>

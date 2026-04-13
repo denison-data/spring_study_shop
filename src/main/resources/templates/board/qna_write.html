@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:25px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_07.gif}">
+    </div>
+    <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+        <form id="qna_write"  method='post' name='write' >
+        <input class="base_input" type="hidden" name="Mode">
+        <input class="base_input" type='hidden' name='no'>
+        <tr><td colspan="2" height="1px" bgcolor="#82b644"></td></tr>
+            <tr>
+                <td class="tr_001" width="120px">제목</td>
+                <td class="td_001">
+                    <input class="input_mn" size="60" name="subject" type="text" v-model="subject">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tr_002">구분</td>
+                <td class="td_002">
+                    <select v-model="selectedProduct" id="productSelect">
+                        <option value="">::선택해주세요::</option>
+                        <option v-if="loading" disabled>로딩 중...</option>
+                        <option v-for="product in products" :key="product.id" :value="product.code">
+                            {{ product.name }}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tr_002">문의유형</td>
+                <td class="td_002">
+                    <select class="select" name="division" id="select2" v-model="division">
+                        <option value="basong">배송</option>
+                        <option value="price">결제</option>
+                        <option value="order">취소/교환/환불</option>
+                        <option value="etc">기타</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tr_002">내용</td>
+                <td class="td_002">
+                    <textarea style="margin-top:5px;" cols="90" rows="18" name="contents" id="textarea" v-model="contents"></textarea>
+                </td>
+            </tr>
+
+            <tr v-if="!isLoggedIn">
+                <td class="tr_002">이동전화</td>
+                <td class="td_002">
+                    <select class="select" name="phone1" v-model="phone1">
+                        <option value="010">010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="018">018</option>
+                        <option value="019">019</option>
+                    </select>
+                    - <input class="input_mn" type="text" name="phone2" size="4" maxlength="4" v-model="phone2">
+                    - <input class="input_mn" type="text" name="phone3" size="4" maxlength="4" v-model="phone3">
+                </td>
+            </tr>
+    </table>
+    <div style="padding-top:25px;text-align:center;"><a href="#" @click="submitForm"><img src="/img/common/btn_ok_01.gif" style="margin-right:5px;"></a>
+    </div>
+
+    <script>
+        new Vue({
+          el: '#con',
+          data: {
+            products: [],
+            selectedProduct: null,
+            subject: '',
+            division: '',
+            contents: '',
+            phone1: '010',
+            phone2: '',
+            phone3: '',
+            isLoggedIn: false, // 로그인 여부
+            loading: true
+          },
+          mounted() {
+            axios.get('/api/product/sellist')
+            .then(response => {
+                this.products = response.data;
+            })
+            .finally(() => {
+                this.loading = false;
+            });
+
+          },
+          methods: {
+            submitForm() {
+            console.log(this.subject);
+              // 2. 제목, 내용 필수 체크
+              if (!this.subject || !this.contents) {
+                alert("제목과 내용을 입력해주세요.");
+                return;
+              }
+
+              // 2. SQL Injection 1차 방어: 특수문자/스크립트 제거
+              const sanitize = str => str.replace(/['";]/g, "").replace(/--/g, "");
+              const payload = {
+                subject: sanitize(this.subject),
+                productId: this.selectedProduct,
+                division: this.division,
+                contents: sanitize(this.contents),
+                phone: !this.isLoggedIn ? `${this.phone1}-${this.phone2}-${this.phone3}` : null
+              };
+              console.log(payload);
+              axios.post('/api/board/qna_write', payload)
+                .then(() => {
+                  alert("등록 성공");
+                  this.subject = '';
+                  this.selectedProduct = '';
+                  this.division = '';
+                  this.contents = '';
+                  this.phone1 = '010';
+                  this.phone2 = '';
+                  this.phone3 = '';
+
+                })
+                .catch(error => {
+                  console.error("등록 실패:", error);
+                });
+            }
+          }
+        });
+    </script>
+
+    <div th:replace="layout/bottom :: bottom"></div>
+</html>

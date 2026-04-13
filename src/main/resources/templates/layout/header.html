@@ -1,0 +1,284 @@
+
+
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block  th:fragment="header">
+    <head >
+        <title>(스프링프레임워크) ::Wisefood::</title>
+        <meta name="google-site-verification" content="n_iuMbk7_On3ptnVI97V1nFJg-7e7ArA1U4ljhRiz6E" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <!-- 삽입 끝 --->
+        <link rel="stylesheet" type="text/css" href="/libs/css/style.css?dev=1.1"/>
+        <!-- <script type="text/javascript" src="/libs/js/jquery-1.5.1.min.js"></script>-->
+        <script language=javascript>
+            function BO(O) { document.getElementById(O).style.background='#d8ff2b'; }//그린
+            function BO3(O) { document.getElementById(O).style.background='#ff2e5f'; }//지역:핑크
+            function BO2(O) { document.getElementById(O).style.background='#ffc001'; }//특별관:오렌지
+
+            function BW1(O) { document.getElementById(O).style.background='#6a6a6a'; }//1단
+            function BW2(O) { document.getElementById(O).style.background='#6e6e6e'; }//2단
+            function BW3(O) { document.getElementById(O).style.background='#747474'; }//3단
+
+            function SO(O) { document.getElementById(O).style.background='#fca039'; }//오렌지_서브
+            function SW(O) { document.getElementById(O).style.background='white'; }
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- AceCounter Log Gathering Script End -->
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+        <!-- Axios CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+    </head>
+<body >
+<div id="wrapper">
+    <div id="box">
+        <div id="header"  >
+            <form method="get" action="/Search" onsubmit="return checkd()" name="formcs1">
+                <table width="100%" cellspacing="0"cellpadding="0" border="0">
+                    <tr><td colspan="2" height="5px;"></td></tr>
+                    <tr>
+                        <td rowspan="2" style="height:56px;text-align:left;"><a href="/"><img th:src="@{/img/logo.jpg}"></a></td>
+                        <td style="padding-top:12px;text-align:right;vertical-top;">
+                         <span v-if="isLoggedIn">
+                            <!-- 로그아웃 -->
+                            <a href="javascript:void(0)" @click="logout" class="topmn">로그아웃</a>
+                        </span>
+                        <span v-else>
+                            <!-- 로그인 -->
+                            <a th:href="@{/login}" class="topmn">로그인</a>
+                        </span>
+            
+                        <img th:src="@{/img/common/dot.gif}" alt="dot">
+                        <!-- 회원정보수정 / 회원가입 -->
+                        <span  v-if="isLoggedIn">
+                            <a th:href="@{/member/modify}" class="topmn">회원정보수정</a>
+                        </span>
+                        <span v-else>
+                            <a th:href="@{/member/register}" class="topmn">회원가입</a>
+                        </span>
+            
+                        <img th:src="@{/img/common/dot.gif}" alt="dot">
+
+                        <!-- 주문배송조회 -->
+                        <a class="topmn" :href="orderLink">
+                            주문배송조회
+                        </a>
+
+                        <img th:src="@{/img/common/dot.gif}" alt="dot">
+
+                        <!-- 마이페이지 -->
+                        <a class="topmn" :href="myLink">
+                            마이페이지
+                        </a>
+
+                        <img th:src="@{/img/common/dot.gif}" alt="dot">
+
+                        <!-- 장바구니 -->
+                        <a th:href="@{/product/cart}" class="topmn">장바구니</a>
+
+                        <img th:src="@{/img/common/line.gif}" alt="line">
+                            <input type="text" name= "SearchWord" style="width:130px;border-radius:1px;background:none;-webkit-appearance:none;font-size:11px; color:#90a522; background-color:white; border:1px solid #b6b6b6;padding:3px;letter-spacing:-1px;font-weight:bold;" value="" >
+                            <input type="image"  th:src="@{/img/common/btn_sear.gif}" align="absmiddle"style="margin-left:2px;margin-bottom:1px;"></a>
+                            <img th:src="@{/img/common/line.gif}">
+                            <a class="topmenu blue" href="#" onClick="{window.external.AddFavorite ('http://www.wisefood.co.kr','::건강지킴이 와이즈푸드::')}" ><img src="/img/common/btn_bookmk.gif">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;height:18px">
+                            <a th:href="@{/board/ev_main}"><img th:src="@{/img/common/mn_01.gif}"></a>
+                            <img th:src="@{/img/common/line_02.gif}">
+                            <a th:href="@{/board/cs_main}"><img th:src="@{/img/common/mn_02.gif}"></a>
+                            <img th:src="@{/img/common/line_02.gif}">
+                            <a th:href="@{/board/club_main}"><img th:src="@{/img/common/mn_03.gif}"></a>
+                            <img th:src="@{/img/common/line_02.gif}">
+                            <a th:href="@{/board/rev_main}"><img th:src="@{/img/common/mn_04.gif}"></a>
+                        </td>
+                    </tr>
+                    <tr><td style="height:10px;"></td></tr>
+                </table>
+                <table cellspacing="0"cellpadding="0" border="0" th:style="'background:url('+@{/img/common/top_bg.gif}+') no-repeat; height:50px;vertical-align:top;'">
+                    <tr>
+                        <!-- 베스트 -->
+                        <td>
+                            <a th:href="@{/best/main}">
+                                <th:block th:with="isOver=${#strings.startsWith(#request.requestURI, '/board/')
+                                                or #strings.startsWith(#request.requestURI, '/inc/')
+                                                or #arrays.contains({'/', '/product/cart', '/product/social',
+                                              '/member/register','/member/modify', '/login','/member/join','/member/joinSuccess',
+                                              '/member/orders',
+                                              '/best/main'}, #request.requestURI)
+                                                 or (#request.queryString != null and #strings.contains(#request.queryString, 'Types=Best10'))}">
+                                    <img th:src="${isOver} ? '/img/common/mu_01_over.png' : '/img/common/mu_01.png'"
+                                         class="top_tab" alt="베스트">
+                                </th:block>
+
+
+                            </a>
+                        </td>
+                        <!-- 특별관 (W_Feat) -->
+                        <td>
+                            <a th:href="@{/product/category(Cat_Content='W_Feat', Types='W_F_cate1')}">
+                                <img th:src="${catContent == 'W_Feat' ?
+                                     '/img/common/mu_02_over.png' :
+                                     '/img/common/mu_02.png'}"
+                                class="top_tab" alt="기능별">
+                            </a>
+                        </td>
+
+                        <!-- 연령별 (W_Age) -->
+                        <td>
+                            <a th:href="@{/product/category(Cat_Content='W_Age')}">
+                                <img th:src="${catContent == 'W_Age' ?
+                                     '/img/common/mu_03_over.png' :
+                                     '/img/common/mu_03.png'}"
+                                class="top_tab" alt="연령별">
+                            </a>
+                        </td>
+
+                        <!-- 지역별 (W_Area) -->
+                        <td>
+                            <a th:href="@{/product/category(Cat_Content='W_Area')}">
+                                <img th:src="${catContent == 'W_Area' ?
+                                     '/img/common/mu_04_over.png' :
+                                     '/img/common/mu_04.png'}"
+                               class="top_tab" alt="지역별">
+                            </a>
+                        </td>
+
+                        <!-- 건강기능식품 (W_Helth) -->
+                        <td style="padding-right:8px;">
+                            <a th:href="@{/product/category(Cat_Content='W_Helth')}">
+                                <img th:src="${catContent == 'W_Helth' ?
+                                     '/img/common/mu_09_over.png' :
+                                     '/img/common/mu_09.png'}"
+                                     class="top_tab" alt="건강기능식품">
+                            </a>
+                        </td>
+
+                        <!-- 피부미용 (W_Skin) -->
+                        <td>
+                            <a th:href="@{/product/category(Cat_Content='W_Skin')}">
+                                <img th:src="${catContent == 'W_Skin' ?
+                                     '/img/common/mu_05_over.png' :
+                                     '/img/common/mu_05.png'}"
+                                        class="top_tab" alt="피부미용">
+                            </a>
+                        </td>
+
+                        <!-- 비타민 (W_Vitamin) -->
+                        <td>
+                            <a th:href="@{/product/category(Cat_Content='W_Vitamin')}">
+                                <img th:src="${catContent == 'W_Vitamin' ?
+                                     '/img/common/mu_06_over.png' :
+                                     '/img/common/mu_06.png'}"
+                                     class="top_tab" alt="비타민">
+                            </a>
+                        </td>
+
+                        <!-- 홍삼 (W_Hongsam) -->
+                        <td>
+                            <a th:href="@{/product/category(Cat_Content='W_Hongsam')}">
+                                <img  th:src="${catContent == 'W_Hongsam' ?
+                                     '/img/common/mu_07_over.png' :
+                                     '/img/common/mu_07.png'}"
+                                      class="top_tab" alt="홍삼">
+                            </a>
+                        </td>
+
+                        <!-- 소셜 -->
+                        <td style="vertical-align:bottom;">
+                            <a th:href="@{/product/social}">
+                                <img th:src="@{/img/common/mu_social.png}" alt="소셜">
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <th:block th:insert="${contentTemplate} :: subcontents"></th:block>
+
+            <table cellspacing="0"cellpadding="0" border="0"height="40px" >
+                <tr >
+                    <td width="200" align="left"  class="notice_txt" >
+                        <ul>
+                            <th:block th:each="row, iterStat  : ${commonNotices}">
+                            <li th:classappend="${iterStat.index > 0} ? 'displayNone' : ''"><img th:src="@{/img/common/icon_notice.gif}" style="margin-right:3px;">
+                            <a th:href="@{/board/cs_v(no=${row.id})}" class="ad" th:text="${row.subject}">{notice.subject}</a>
+                            </li>
+                            </th:block>
+                        </ul>
+                    </td>
+                    <td width="26"><a href="javascript:noticeRotation('prev');"><img th:src="@{/img/common/btn_arrow_01.gif}"></a><a href="javascript:noticeRotation('next');"><img th:src="@{/img/common/btn_arrow_02.gif}"></a></td>
+                    <td width="48"align="right"><img th:src="@{/img/common/icon_sear.gif}"></td>
+
+                    <th:block th:each="row, status : ${commonKeywords}">
+                        <td width="145">
+                            <a th:href="${row.url}" th:text="${row.keyword}">Keyword(Default)</a>
+                        </td>
+                    </th:block>
+                    <td width="230" align="right">
+                        <a href=":;" onclick="javascript:alert('이 페이지는 포트폴리오 페이지입니다\n 서비스 종료되었습니다.');return false;" target="_new"><img th:src="@{/img/common/btn_twitter.gif}"></a>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+        <script>
+            new Vue({
+              el: "#header",
+              data: {
+                isLoggedIn: false,
+                orderLink: "/login?redirect=/member/orders",
+                myLink: "/login?redirect=/member/modify",
+              },
+              async mounted() {
+                // 페이지 로드 시 토큰 확인
+                this.isLoggedIn = !!localStorage.getItem("accessToken");
+                const token = localStorage.getItem("accessToken");
+                console.log(token);
+                if (token) {
+                    try {
+                        const response = await axios.get("/api/member/me", {
+                            headers: { Authorization: "Bearer " + token }
+                        });
+                        this.isLoggedIn = true;   // 서버에서 인증 성공
+                        this.loadData = response.data;
+                        this.orderLink = "/member/orders";
+                        this.myLink = "/member/modify";
+                    } catch (error) {
+                        console.error("토큰 검증 실패:", error);
+                        this.isLoggedIn = false;  // 토큰은 있지만 인증 실패 → 로그아웃 처리
+                        localStorage.removeItem("accessToken");
+                        this.orderLink = "/login?redirect=/member/orders";
+                        this.myLink = "/login?redirect=/member/modify";
+                    }
+                } else {
+                    // 비로그인 상태 → 로그인 페이지로 이동 (redirect 파라미터 포함)
+                    this.orderLink = "/login?redirect=/member/orders";
+                    this.myLink = "/login?redirect=/member/modify";
+                }
+                console.log(this.isLoggedIn);
+              },
+              methods: {
+                logout() {
+                    // 서버에 로그아웃 API 호출 (선택 사항)
+                    axios.post("/api/auth/logout", {}, {
+                        headers: { Authorization: "Bearer " + localStorage.getItem("accessToken") }
+                    }).finally(() => {
+                        console.log("토큰삭제");
+                        // 토큰 삭제
+                        localStorage.removeItem("accessToken");
+                        this.isLoggedIn = false;
+                        window.location.href = "/"; // 로그아웃 후 메인으로 이동
+                    });
+                }
+
+              }
+            });
+        </script>
+
+        <div id="cen_contents">

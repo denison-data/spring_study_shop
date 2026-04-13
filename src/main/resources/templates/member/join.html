@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<!-- 카카오 주소 검색 스크립트 추가 -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+<script type="text/javascript" src="/lib/js/member.js?ver1=1"></script>
+<div id="con">
+    <form method="post" action="mem_p_01.php" name="Join"  id="Join">
+        <input type="hidden" name="Mode" value="Join">
+
+
+        <div style="padding-bottom:15px;padding-top:20px;">
+            <img th:src="@{/img/common/tit_01.gif}">
+        </div>
+        <div style="padding-bottom:30px;"><img th:src="@{/img/common/member_02.gif}"></div>
+        <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j03.gif}"></div>
+        <div style="padding-bottom:30px;">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                <tr><td colspan="2" height="1px" bgcolor="#82b644"></td></tr>
+                <tr>
+                    <td class="tr_001" width="150px">이름</td>
+                    <td class="td_001"><input type="text" class="input_mn" size="20" name="U_Name"  alt="이름은 입력하셔야 합니다." >
+                        <span class="te_gn sz_11 te_le" style="margin-left:10px;">*실명을 적어주세요.</span></td>
+                </tr>
+                <tr>
+                    <td class="tr_002">아이디</td>
+                    <td class="td_002">
+                        <input type="text" class="input_mn" size="20"  name="U_ID" maxlength="16"   alt="아이디 입력바랍니다.">
+                        <a href="javascript:ID_chk('id_check.php','Join','U_ID')"><img th:src="@{/img/common/btn_check.gif}" align="absmiddle" style="margin-left:5px;"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_002">비밀번호</td>
+                    <td class="td_002"><input type="password" class="input_mn" size="30"  name="U_Pass" alt="비밀번호 입력바랍니다.">
+                        <span class="te_gn sz_11 te_le" style="margin-left:10px;">*영문,숫자 조합 4~16자로 입력해주세요.</span></td>
+                </tr>
+                <tr>
+                    <td class="tr_002">비밀번호 확인</td>
+                    <td class="td_002"><input type="password" class="input_mn" size="30"  name="U_Pass2" alt="비밀번호 확인 입력바랍니다."></td>
+                </tr>
+                <tr>
+                    <td class="tr_002">생년월일</td>
+                    <td class="td_002">
+                        <select class="select" name="Birth_year" >
+                        </select>
+                        년
+                        <select name="Birth_month" class="select">
+                        </select>
+                        월
+                        <select name="Birth_day" class="select">
+                        </select>
+                        일
+                        <input value="S" checked="checked" type="radio" name="Birth_Ext" style="margin-left:10px;">양력</input> <input value="L" type="radio" name="Birth_Ext" />음력</input></td>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_002">이동전화</td>
+                    <td class="td_002">
+                        <select class="select" name="Mobile_1">
+                            <option selected="selected" value="010">010</option>
+                            <option value="011">011</option>
+                            <option value="016">016</option>
+                            <option value="017">017</option>
+                            <option value="018">018</option>
+                            <option value="019">019</option>
+                        </select>
+                        - <input  onkeydown="handlerNum()"  alt="이동전화 입력바랍니다" maxlength="4"  type="text" name="Mobile_2" class="input_mn" size="8">
+                        - <input  class="input_mn" onkeydown="handlerNum()"  alt="이동전화 입력바랍니다" maxlength="4" size="8" type="text" name="Mobile_3">
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="tr_002">주소</td>
+                    <td class="td_002"><input type="text" class="input_mn" size="12" name="Zip1"  readonly    alt="우편번호를 입력바랍니다">
+<!--                        - <input type="text" class="input_mn" size="8" readonly   alt="우편번호를 입력바랍니다" name="Zip2">-->
+                        <a href="javascript:execDaumPostcode()" align="absmiddle"style="margin-left:5px;"><img th:src="@{/img/common/btn_addr.gif}" align="absmiddle"style="margin-left:5px;"></a>
+<!--                        <a href="javascript:Zip_Search('../inc/zip.php')"><img th:src="@{/img/common/btn_addr.gif}" align="absmiddle"style="margin-left:5px;"></a>-->
+                        <br>
+                        <input type="text"  name="Address" class="input_mn" size="35" style="margin-top:5px;" readonly    alt="주소를 입력바랍니다" >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="tr_002">상세주소</td>
+                    <td class="td_002"><input type="text" class="input_mn" size="60"   name="Address_Ext"     alt="세부주소를 입력바랍니다">
+                        <span class="te_gn sz_11 te_le" style="margin-left:10px;">상세주소를 입력해주세요.</span></td>
+                </tr>
+                <tr>
+                    <td class="tr_002">연락처</td>
+                    <td class="td_002">
+                        <select class="select" name="Phone_1">
+                            <option selected="selected" value="02">02</option>
+                            <option value="031">031</option>
+                            <option value="032">032</option>
+                            <option value="033">033</option>
+                            <option value="041">041</option>
+                            <option value="042">042</option>
+                            <option value="043">043</option>
+                            <option value="051">051</option>
+                            <option value="052">052</option>
+                            <option value="053">053</option>
+                            <option value="054">054</option>
+                            <option value="055">055</option>
+                            <option value="061">061</option>
+                            <option value="062">062</option>
+                            <option value="063">063</option>
+                            <option value="064">064</option>
+                            <option value="070">070</option>
+                        </select>
+                        - <input type="text" class="input_mn" size="8"  onkeydown="handlerNum()" id="im7" alt="연락처를 입력바랍니다" maxlength="4"  name="Phone_2"> - <input type="text" class="input_mn" size="8"  onkeydown="handlerNum()" id="im7" alt="연락처를 입력바랍니다" maxlength="4" name="Phone_3">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j04.gif}"></div>
+        <div style="padding-bottom:20px;">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                <tr><td colspan="2" height="2px" bgcolor="#cd8f4c"></td></tr>
+                <tr>
+                    <td colspan="2" class="td_004">
+                        <input type="checkbox"style="border:1px solid #d6d6d6; background-color:#ddecd4; width:15px; height:15px;" name="etc"  value="y"  onclick="member_join_etccheck(this,this.value);"><span class="sz_11 te_le" style="margin-left:10px;"><b>추가정보</b>를 입력합니다.</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004" width="210px">직업</td>
+                    <td class="td_004">
+                        <select class="select" id="Job" disabled="disabled" name="Job" alt="직업을 선택 바랍니다">
+                            <option selected="selected" value="">선택하세요.</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">결혼여부</td>
+                    <td class="td_004">
+                        <input type="radio" name="wedding" value="n" disabled style="margin-left:0px;"  id="im2"> 미혼</input>
+                        <input type="radio" name="wedding" value="y" disabled style="margin-left:10px;" id="im2" > 기혼</input>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">건강식품구매주기</td>
+                    <td class="td_004">
+                        <input disabled="disabled" onclick="chkRadio(this.value);" value="월 1~2회" type="radio" name="gg_gomae" style="margin-left:0px;" />월 1~2회</input>
+                        <input disabled="disabled" onclick="chkRadio(this.value);" value="6개월 1~2회" type="radio" name="gg_gomae" style="margin-left:10px;"> 6개월 1~2회</input>
+                        <input disabled="disabled" onclick="chkRadio(this.value);" value="1년 1~2회" type="radio" name="gg_gomae" style="margin-left:10px;"> 1년 1~2회</input>
+                        <input disabled="disabled" onclick="member_join_etc_txt2(this);" value="기타" type="radio" name="gg_gomae" style="margin-left:10px;"> 기타</input>
+                        <input class="input_mn" disabled="disabled" maxlength="30" size="8" style="margin-left:2px;" type="text" name="gg_gomae_txt" />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">가족구성</td>
+                    <td class="td_004">
+                        <input type="radio"  disabled="disabled"  value="1인가구"  name="family"> 1인가구</input>
+                        <input type="radio"  disabled="disabled"  value="1대가족" name="family" style="margin-left:10px;"> 1대가족</input>
+                        <input type="radio"  disabled="disabled"  value="2대가족" name="family" style="margin-left:10px;"> 2대가족</input>
+                        <input type="radio"  disabled="disabled"  value="3대가족" name="family" style="margin-left:10px;"> 3대가족</input>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">자녀여부</td>
+                    <td class="td_004">
+                        <input type="radio" disabled="disabled"  value="기혼자녀"  name="children" > 기혼자녀</input>
+                        <input type="radio" disabled="disabled"  value="미혼 자녀"  name="children" style="margin-left:10px;"> 미혼 자녀</input>
+                        <input type="radio" disabled="disabled"  value="취학전 자녀"  name="children" style="margin-left:10px;"> 취학전 자녀</input>
+                        <input type="radio" disabled="disabled"  value="취학 자녀"  name="children" style="margin-left:10px;"> 취학 자녀</input>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">현재 복용중이거나 복용해온 건강식품<br>(중복선택가능)</td>
+                    <td class="td_004">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td><input disabled="disabled" value="면역" type="checkbox" name="hs_prod[]"> 면역</input></td>
+                                <td><input disabled="disabled" value="눈" type="checkbox" name="hs_prod[]" /> 눈</input></td>
+                                <td><input disabled="disabled" value="피부" type="checkbox" name="hs_prod[]" /> 피부</td>
+                                <td><input disabled="disabled" value="혈당" type="checkbox" name="hs_prod[]" /> 혈당</td>
+                                <td><input disabled="disabled" value="혈압" type="checkbox" name="hs_prod[]" /> 혈압</td>
+                                <td><input disabled="disabled" value="갱년기" type="checkbox" name="hs_prod[]" /> 갱년기</td>
+                                <td><input disabled="disabled" value="관절" type="checkbox" name="hs_prod[]" /> 관절</td>
+                                <td><input disabled="disabled" value="혈액순환" type="checkbox" name="hs_prod[]" /> 혈액순환</td>
+                            </tr>
+                            <tr>
+                                <td height="30px"><input disabled="disabled" value="전립선" type="checkbox" name="hs_prod[]" /> 전립선</td>
+                                <td><input disabled="disabled" value="영양보충" type="checkbox" name="hs_prod[]" /> 영양보충</td>
+                                <td><input disabled="disabled" value="다이어트" type="checkbox" name="hs_prod[]" /> 다이어트</input></td>
+                                <td><input disabled="disabled" value="피로회복" type="checkbox" name="hs_prod[]" /> 피로회복</input></td>
+                                <td><input disabled="disabled" value="숙취해소" type="checkbox" name="hs_prod[]" /> 숙취해소</td>
+                                <td><input disabled="disabled" value="어린이" type="checkbox" name="hs_prod[]" /> 어린이</td>
+                                <td colspan="2"><input disabled="disabled" onclick="member_join_etc_txt(this);" value="기타(직접입력)" type="checkbox" name="hs_prod[]" > 기타</input>
+                                    <input class="input_mn" disabled="disabled" maxlength="30" size="8" type="text" name="hs_prod_txt" style="margin-left:2px;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">관심있는 건강식품 목록<br>(중복선택가능)</td>
+                    <td class="td_004">
+                        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                            <tr>
+                                <td><input disabled="disabled" value="면역" type="checkbox" name="hs_prod2[]"> 면역</input></td>
+                                <td><input disabled="disabled" value="눈" type="checkbox" name="hs_prod2[]" /> 눈</input></td>
+                                <td><input disabled="disabled" value="피부" type="checkbox" name="hs_prod2[]" /> 피부</td>
+                                <td><input disabled="disabled" value="혈당" type="checkbox" name="hs_prod2[]" /> 혈당</td>
+                                <td><input disabled="disabled" value="혈압" type="checkbox" name="hs_prod2[]" /> 혈압</td>
+                                <td><input disabled="disabled" value="갱년기" type="checkbox" name="hs_prod2[]" /> 갱년기</td>
+                                <td><input disabled="disabled" value="관절" type="checkbox" name="hs_prod2[]" /> 관절</td>
+                                <td><input disabled="disabled" value="혈액순환" type="checkbox" name="hs_prod2[]" /> 혈액순환</td>
+                            </tr>
+                            <tr>
+                                <td height="30px"><input disabled="disabled" value="전립선" type="checkbox" name="hs_prod2[]" /> 전립선</td>
+                                <td><input disabled="disabled" value="영양보충" type="checkbox" name="hs_prod2[]" /> 영양보충</td>
+                                <td><input disabled="disabled" value="다이어트" type="checkbox" name="hs_prod2[]" /> 다이어트</input></td>
+                                <td><input disabled="disabled" value="피로회복" type="checkbox" name="hs_prod2[]" /> 피로회복</input></td>
+                                <td><input disabled="disabled" value="숙취해소" type="checkbox" name="hs_prod2[]" /> 숙취해소</td>
+                                <td><input disabled="disabled" value="어린이" type="checkbox" name="hs_prod2[]" /> 어린이</td>
+                                <td colspan="2"><input disabled="disabled" onclick="mem_join_prod2(this);" value="기타(직접입력)" type="checkbox" name="hs_prod2[]" > 기타</input>
+                                    <input class="input_mn" disabled="disabled" maxlength="30" size="8" type="text" name="hs_prod2_txt" style="margin-left:2px;"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">건강식품 주요구매처</td>
+                    <td class="td_004" style="line-height:25px;"><input  disabled="disabled" value="온라인" type="checkbox" name="place[]" > 온라인</input>
+                        <input disabled="disabled" value="약국" type="checkbox" name="place[]" style="margin-left:10px;"> 약국</input>
+                        <input disabled="disabled" value="편의점" type="checkbox" name="place[]" style="margin-left:10px;"> 편의점</input>
+                        <input disabled="disabled" value="건강식품" type="checkbox" name="place[]" style="margin-left:10px;"> 건강식품</input>
+                        <input disabled="disabled" value="직영매장" type="checkbox" name="place[]" style="margin-left:10px;"> 직영매장</input>
+                        <input disabled="disabled" onclick="mem_place_where(this);" value="기타(직접입력)" type="checkbox" name="place[]" style="margin-left:10px;"> 기타 직접입력</input>
+                        <input type="text"  name="place_txt"class="input_mn" size="8" style="margin-left:2px;" disabled="disabled" >
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tr_004">추천인</td>
+                    <td class="td_004" style="line-height:25px;">
+                        <input type="text" class="input_mn" size="20"  disabled="disabled"   name="your_id"><span class="te_gn sz_11 te_le" style="margin-left:10px;">추천인의 아이디를 입력해주세요</span>
+                        <b>[추천인에게 500포인트가 지급됩니다.]</b>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="text-align:center;">
+            <a href="#" onclick="javascript:alert('현재는 운영중인 사이트가 아닙니다.');return false;"><img src="/img/common/btn_ok_01.gif" style="margin-right:5px;"></a>
+            <a href="javascript:history.go(-1);"><img src="/img/common/btn_cancel_02.gif"></a>
+        </div>
+    </form>
+    <script>
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 우편번호
+                    const fullZip = data.zonecode; // 5자리 우편번호
+                    document.querySelector("input[name='Zip1']").value = fullZip;
+                    //document.querySelector("input[name='Zip2']").value = fullZip.substring(3);
+                    // 주소
+                    document.querySelector("input[name='Address']").value = data.address;
+                }
+            }).open();
+        }
+    </script>
+
+    <div style="height:50px">&nbsp;</div>
+</div>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:25px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_05.gif}">
+    </div>
+    <div style="display:block;overflow:hidden;padding-top:15px;" id="Board">
+        <div style="float:left;">
+            <div style="display: flex;">
+                <!-- 모든 a 태그를 나란히 배치 -->
+                <!-- 첫번째 탭 -->
+                <a th:href="@{/board/ev_main}">
+                    <img th:src="${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/ev_main')}"
+                         th:attr="data-normal=${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         data-hover="/img/common/tab_event_01_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 두번째 탭 -->
+                <a th:href="@{/board/review_main}">
+                    <img th:src="${currentPage.startsWith('/board/review_main') || currentPage.startsWith('/board/review_v') ? '/img/common/tab_event_02_over.gif' : '/img/common/tab_event_02.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/review_main')}"
+                         data-normal="/img/common/tab_event_02.gif"
+                         data-hover="/img/common/tab_event_02_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 세번째 탭 -->
+                <a th:href="@{/board/winner_main}">
+                    <img th:src="${currentPage.startsWith('/board/winner_main') || currentPage.startsWith('/board/winner_v') ? '/img/common/tab_noti_03_over.gif' : '/img/common/tab_noti_03.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/winner_main')}"
+                         data-normal="/img/common/tab_noti_03.gif"
+                         data-hover="/img/common/tab_noti_03_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 네번째 탭 -->
+                <a th:href="@{/product/social}">
+                    <img th:src="${currentPage.startsWith('/product/social') ? '/img/common/tab_noti_04_over.gif' : '/img/common/tab_noti_04.gif'}"
+                         th:data-active="${currentPage != null && currentPage.startsWith('/product/social')}"
+                         data-normal="/img/common/tab_noti_04.gif"
+                         data-hover="/img/common/tab_noti_04_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+            </div>
+        </div>
+        <div style="text-align:right;padding-bottom:5px;">
+            &nbsp;
+            <!--
+            <select name=""><option>제목</option>
+            <option>내용</option></select>
+            <input type="text" size="18" name="keyword" value="<?=$keyword?>" class="input_notice"></div>
+            --->
+        </div>
+        <div id="Event">
+            <div style="padding-bottom:10px;">
+                <!-- 데이터가 없을 때 -->
+                <div v-if="eventList.length === 0">
+                    조회된 데이터가 없습니다.
+                </div>
+                <!-- 데이터가 있을 때 -->
+                <div v-else>
+                    <div v-for="(item, index) in eventList"
+                         :key="item.id">
+                        <div style="display:block; overflow:hidden;border-bottom:1px solid #cccccc; border-top:2px solid #aec63c;width:750px;padding-bottom:10px;">
+                            <div style="padding:10px;">
+                                <div style="width:230px;float:left;">
+                                    <div class="sub_list">
+                                        <div :class="getEventStatusClass(item)">{{ getEventStatusText(item) }}</span></div>
+                                        <div style="padding-left:20px;">
+                                            <ul style="background:url(/img/common/bg_list.gif) no-repeat;padding:15px">
+                                                <li>
+                                                    <a :href="getEventDetailLink(item)">
+                                                    <img v-if="item.attach"
+                                                       :src="`/img/data/event/${item.attach}`"
+                                                       width="180px"
+                                                       height="120px"
+                                                       :alt="item.subject">
+                                                    <img v-else
+                                                         src="/img/data/event/no_img.png"
+                                                         alt="이미지 없음"></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div style="float:left;">
+                                    <a :href="getEventDetailLink(item)" class="best">
+                                        <ul style="padding-left:15px;padding-top:25px;">
+                                            <li class="te_do sz_11 te_le te_gn2 te_b" style="text-align:left;">  와이즈푸드 이벤트 <?=$i?> 발표</li>
+                                            <li class="te_na sz_20 te_le te_pink te_b" style="text-align:left;padding-top:3px;">{{ cutText(item.subject, 60) }}</li>
+                                            <!--<li class="te_do sz_11 te_le te_gray3" style="text-align:left;line-height:15px;padding-top:3px;">대한민국 명절 한가위를 기년하여 와이즈푸드에서 통크게 쏩니다.</li>--->
+                                            <li class="te_en sz_12 te_le te_gray" style="text-align:left;padding-top:10px;"><span class="te_do te_b te_og te_le  sz_11">이벤트기간</span> :<b>{{ formatDate(item.formattedEventFrom) }} ~ {{ formatDate(item.formattedEventTo) }}</b></li>
+                                            <li class="te_en sz_12 te_le te_gray3" style="text-align:left;padding-top:3px;"><span class="te_do te_b te_og te_le sz_11">당첨자발표</span>  :<b>{{ formatDate(item.eventWinDay) }}</b></li>
+                                        </ul>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding-top:10px; padding-bottom:20px;text-align:center;">
+                <!-- 페이징 처리 -->
+                <div class="page" v-if="totalPages > 0">
+                    <p>
+                        <!-- 이전 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === 1}"
+                           @click="changePage(currentPage - 1)"
+                           v-if="currentPage > 1">
+                            &lt;
+                        </a>
+
+                        <!-- 페이지 번호들 -->
+                        <a href="javascript:void(0)"
+                           v-for="pageNum in getPageNumbers()"
+                           :key="pageNum"
+                           :class="{'on': pageNum === currentPage}"
+                           @click="changePage(pageNum)">
+                            {{ pageNum }}
+                        </a>
+
+                        <!-- 다음 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === totalPages}"
+                           @click="changePage(currentPage + 1)"
+                           v-if="currentPage < totalPages">
+                            &gt;
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#Event',
+        data: {
+            eventList: [],
+            currentPage: 1,
+            totalPages: 0,
+            pageSize: 10,
+            totalElements: 0,
+            setPage: 5
+        },
+        created() {
+            this.loadBoard();
+        },
+        methods: {
+            // API 호출로 이벤트 목록 로드
+            async loadBoard(page = 1) {
+                try {
+                    const response = await axios.get('/api/board/event', {
+                        params: {
+                            search: "당첨자",
+                            page: page,
+                            size: this.pageSize
+                        }
+                    });
+                    this.eventList = response.data.content || [];
+                    this.currentPage = response.data.currentPage || 1;
+                    this.totalPages = response.data.totalPages || 0;
+                    this.totalElements = response.data.totalElements || 0;
+
+                } catch (error) {
+                     console.error('이벤트 목록 로드 실패:', error);
+                    this.eventList = [];
+                    alert('데이터를 불러오는데 실패했습니다.');
+                }
+            },
+            cutText(text, length) {
+                if (!text) return '';
+                if (text.length <= length) return text;
+                return text.substring(0, length) + '...';
+            },
+
+            // 이벤트 상태 클래스 결정
+            getEventStatusClass(item) {
+                if (!item.formattedEventTo) return 'event_icon';
+                const today = new Date();
+                const eventEndDate = new Date(item.formattedEventTo);
+                return today >= eventEndDate ? 'event_icon_end' : 'event_icon';
+            },
+            // 이벤트 상태 텍스트
+            getEventStatusText(item) {
+                 if (!item.formattedEventTo) return '진행중';
+
+                  const today = new Date();
+                  const eventEndDate = new Date(item.formattedEventTo);
+
+                  return today >= eventEndDate ? '종료' : '진행중';
+            },
+
+             // 이벤트 상세 페이지 링크 생성
+            getEventDetailLink(item) {
+              return `/board/winner_v?page=${this.currentPage}&set_page=${this.setPage}&no=${item.id}`;
+            },
+
+            getEventNumber(index) {
+              const startNum = (this.currentPage - 1) * this.pageSize;
+              return startNum + (this.pageSize - index);
+            },
+            formatDate(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}년 ${month}월 ${day}일`;
+            },
+            // 페이지 변경
+            changePage(page) {
+                if (page < 1 || page > this.totalPages || page === this.currentPage) {
+                    return;
+                }
+                this.loadBoard(page);
+                // 페이지 상단으로 스크롤
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            getPageNumbers() {
+                const pageGroupSize = 10; // PHP의 bbs_page_scale
+                let pageStart = Math.floor(this.currentPage / pageGroupSize) * pageGroupSize + 1;
+
+                if ((this.currentPage % pageGroupSize) === 0) {
+                    pageStart -= pageGroupSize;
+                }
+
+                const pageEnd = Math.min(pageStart + pageGroupSize - 1, this.totalPages);
+                const pages = [];
+
+                for (let i = pageStart; i <= pageEnd; i++) {
+                    pages.push(i);
+                }
+
+                return pages;
+            },
+        }
+    });
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

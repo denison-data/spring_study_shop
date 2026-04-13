@@ -1,0 +1,149 @@
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div id="left" th:fragment="left">
+        <div style="padding-top:10px;">
+            <img th:src="@{/img/common/left_tit.gif}">
+        </div>
+
+        <th:block th:if="${currentPage != null and leftStatus1 == true}">
+            <div>
+                <ul><li><img th:src="@{/img/common/tit_event_01.gif}"></li></ul>
+                <!-- 메뉴 1 -->
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/ev_main}">
+                            <img th:with="isActive=${currentPage == '/board/ev_main' or currentPage == '/board/ev_v'}"
+                                 th:src="${isActive} ? '/img/common/event_01_over.gif' : '/img/common/event_01.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/event_01_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/event_01_over.gif\'' : 'this.src=\'/img/common/event_01.gif\''">
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/review_main}">
+                            <img th:with="isActive=${currentPage == '/board/review_main' or currentPage == '/board/review_v'}"
+                                 th:src="${isActive} ? '/img/common/event_02_over.gif' : '/img/common/event_02.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/event_02_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/event_02_over.gif\'' : 'this.src=\'/img/common/event_02.gif\''">
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/winner_main}">
+                            <img th:with="isActive=${currentPage == '/board/winner_main' or currentPage == '/board/winner_v'}"
+                                 th:src="${isActive} ? '/img/common/event_03_over.gif' : '/img/common/event_03.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/event_03_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/event_03_over.gif\'' : 'this.src=\'/img/common/event_03.gif\''">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </th:block>
+        <th:block th:if="${currentPage != null and leftStatus2 == true}">
+            <div>
+                <ul><li><img th:src="@{/img/common/cs_tit.gif}"></li></ul>
+                <!-- 메뉴 1 -->
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/cs_main}">
+                            <img th:with="isActive=${currentPage == '/board/cs_main' or currentPage == '/board/cs_v'}"
+                                 th:src="${isActive} ? '/img/common/cs_01_over.gif' : '/img/common/cs_01.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/cs_01_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/cs_01_over.gif\'' : 'this.src=\'/img/common/cs_01.gif\''">
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/cs_qna_w}">
+                            <img th:with="isActive=${currentPage == '/board/cs_qna_w'}"
+                                 th:src="${isActive} ? '/img/common/cs_02_over.gif' : '/img/common/cs_02.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/cs_02_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/cs_02_over.gif\'' : 'this.src=\'/img/common/cs_02.gif\''">
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/cs_prod_main}">
+                            <img th:with="isActive=${currentPage == '/board/cs_prod_main'}"
+                                 th:src="${isActive} ? '/img/common/cs_03_over.gif' : '/img/common/cs_03.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/cs_03_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/cs_03_over.gif\'' : 'this.src=\'/img/common/cs_03.gif\''">
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/cs_etc_main}">
+                            <img th:with="isActive=${currentPage == '/board/cs_etc_main'}"
+                                 th:src="${isActive} ? '/img/common/cs_04_over.gif' : '/img/common/cs_04.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/cs_04_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/cs_04_over.gif\'' : 'this.src=\'/img/common/cs_04.gif\''">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </th:block>
+
+        <th:block th:if="${currentPage != null and leftStatus3 == true}">
+            <div>
+                <ul><li><img th:src="@{/img/common/comm_tit.gif}"></li></ul>
+                <!-- 메뉴 1 -->
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/club_main}">
+                            <img th:with="isActive=${currentPage == '/board/club_main' or currentPage == '/board/cartoon_v'}"
+                                 th:src="${isActive} ? '/img/common/comm_01_over.gif' : '/img/common/comm_01.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/comm_01_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/comm_01_over.gif\'' : 'this.src=\'/img/common/comm_01.gif\''">
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/blog_main}">
+                            <img th:with="isActive=${currentPage == '/board/blog_main'  or currentPage == '/board/blog_v'}"
+                                 th:src="${isActive} ? '/img/common/comm_02_over.gif' : '/img/common/comm_02.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/comm_02_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/comm_02_over.gif\'' : 'this.src=\'/img/common/comm_02.gif\''">
+                        </a>
+                    </li>
+                </ul>
+                <ul>
+                    <li style="padding-top:5px;">
+                        <a th:href="@{/board/rev_main}">
+                            <img th:with="isActive=${currentPage == '/board/rev_main' or currentPage == '/board/exper_v'}"
+                                 th:src="${isActive} ? '/img/common/comm_03_over.gif' : '/img/common/comm_03.gif'"
+                                 th:onmouseover="'this.src=\'/img/common/comm_03_over.gif\''"
+                                 th:onmouseout="${isActive} ? 'this.src=\'/img/common/comm_03_over.gif\'' : 'this.src=\'/img/common/comm_03.gif\''">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </th:block>
+        <div style="padding-top:10px;">
+            <table cellspacing="0" cellpadding="0" th:style="'background:url('+@{/img/common/left_mn.gif}+') no-repeat;width:190px;height:195px;border:0px;padding-left:15px;verticla-align:top;'">
+                <tr><td style="padding-top:140px;height:19px;"><a th:href="@{/inc/company}"><img th:src="@{/img/common/mn_q05.gif}"></a></td></tr>
+                <tr><td style="height:19px;"><a th:href="@{/inc/map}"><img th:src="@{/img/common/mn_q06.gif}"></a></td></tr>
+                <tr><td></td></tr>
+            </table>
+        </div>
+        <!--div style="padding-top:15px;">
+            <table cellspacing="0" cellpadding="0" style="background:url(/img/common/left_mn02.gif) no-repeat;height:130px;border:0px;padding-left:15px;width:190px;verticla-align:bottom;">
+                <tr><td style="padding-top:35px;"><a href="../company/company.php"><img src="/img/common/mn_q01.gif"></a></td></tr>
+                <tr><td style="height:19px;"><a href="../company/company.php"><img src="/img/common/mn_q02.gif"></a></td></tr>
+                <tr><td style="height:19px;"><a href="../company/company.php"><img src="/img/common/mn_q03.gif"></a></td></tr>
+                <tr><td style="height:19px;"><a href="../company/company.php"><img src="/img/common/mn_q04.gif"></a></td></tr>
+                <tr><td style="height:15px;"></td></tr>
+            </table>
+        </div-->
+        <div style="padding-top:10px;">
+            <img th:src="@{/img/common/left_cs.gif}">
+        </div>
+        <div th:replace="createfiles/adver_right :: adver_right"></div>
+
+    </div>

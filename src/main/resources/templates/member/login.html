@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+    <div th:replace="layout/left :: left"></div>
+    <div id="con">
+<body>
+<div style="padding-top:90px;" id="app">
+
+        <div style="width:750px;border-top:2px solid #a9cc38;border-bottom:1px solid #a9cc38;padding-top:30px;padding-left:20px padding-right:20px;padding-bottom:20px;">
+            <div style="680px;text-align:center;">
+                <div style="display:inline-block;overflow:hidden;">
+                    <form @submit.prevent="login"  >
+                    <input type="hidden" name="mode" value="login">
+                    <input type="hidden" name="Prev_URL" value="">
+                        <div style="float:left;width:410px;">
+                        <ul>
+                            <li style="text-align:left;"><img th:src="@{/img/common/tit_login.gif}" style="margin-bottom:15px;"></li>
+                            <li style="text-align:left;"><img th:src="@{/img/common/tx_01.gif}" >
+                                <input type="text" name="user_id" v-model="userid"   @keydown.enter="login"  class="input_mn" size="13" ref="useridInput">
+                                <img th:src="@{/img/common/tx_02.gif}">
+                                <input name="passwd" type="password"  v-model="password"  @keydown.enter="login"  class="input_mn" size="15">
+                                <a href="javascript:void(0);" @click="login">
+                                <img th:src="@{/img/common/btn_login.gif}" style="margin-left:5px;">
+                                </a>
+                            </li>
+                            <!--비회원일때>
+                            <li class="te_gray"><img th:src="@{/img/common/x_03.gif}"><input type="text" class="input_mn" size="13"><img th:src="@{/img/common/x_04.gif"><input type="text" class="input_mn" size="8">-<input type="password" class="input_mn" size="8"><img th:src="@{/img/common/tn_login.gif" style="margin-left:5px;"></li-->
+                            <li style="height:19px;text-align:left;padding-top:15px;"><a href="/member/register" class="find">아직 와이즈푸드회원이 아니신가요?지금 바로 <span class="te_og te_b">회원가입</span>하세요!</a></li>
+                            <li style="height:19px;text-align:left;"><a href="/member/find" class="find">회원아이디를 잊어버리셨나요?</a><img th:src="@{/img/common/line_07.gif}"><a href="/member/find.php" class="find">비밀번호가 생각나지 않으세요?</a></li>
+                        </ul>
+                    </div>
+                    <div style="width:270px;float:left;padding-bottom:10px;"><a href="/member/register"><img th:src="@{/img/common/img_login02.gif}"></a></div>
+                </div>
+                <div><img th:src="@{/img/common/img_login.gif}"></div>
+                </form>
+            </div>
+
+            <div v-if="errorMessage" style="color:red;">{{ errorMessage }}</div>
+        </div>
+</div>
+
+
+<iframe name="iframe" src="" frameborder="" height=""></iframe>
+</div>
+<script>
+new Vue({
+    el: "#app",
+    data: {
+        userid: "",
+        password: "",
+        errorMessage: "",
+        redirect : new URLSearchParams(window.location.search).get("redirect")
+    },
+    mounted: function() {
+        if (localStorage.getItem("accessToken")){
+            window.location.href = this.redirect ?? "/";
+        }
+        console.log(localStorage.getItem("accessToken"));
+        // 컴포넌트가 화면에 붙은 뒤 1초 후 포커스
+        setTimeout(() => {
+            this.$refs.useridInput.focus();
+        }, 300);
+    },
+
+    methods: {
+        login: function() {
+            console.log("로그인중");
+            if (!this.userid || !this.password) {
+                this.errorMessage = "아이디와 비밀번호를 입력하세요.";
+                return;
+            }
+            axios.post("/api/auth/login", {
+                userid: this.userid,
+                password: this.password
+            })
+            .then(response => {
+                  console.log("전체 응답:", response);          // 응답 전체 확인
+                  console.log("응답 데이터:", response.data);   // 실제 서버에서 반환한 JSON
+                  console.log("토큰:", response.data.token);    // 토큰만 확인
+                localStorage.setItem("accessToken", response.data.token);
+                window.location.href = this.redirect ?? "/";
+            })
+            .catch(error => {
+                this.errorMessage = "로그인 실패: 아이디 또는 비밀번호를 확인하세요.";
+            });
+        },
+    }
+
+});
+
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

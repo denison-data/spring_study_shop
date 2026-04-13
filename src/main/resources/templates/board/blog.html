@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div id="Board">
+        <div style="padding-bottom:25px;padding-top:20px;">
+            <img th:src="@{/img/common/tit_11.gif}">
+        </div>
+        <div style="display:block;overflow:hidden;padding-top:15px;">
+
+            <div style="text-align:right;padding-bottom:5px;">
+                &nbsp;
+                <!--
+                <select><option>제목</option>
+                <option>내용</option></select>
+                <input type="text" size="18" class="input_notice">
+                --->
+            </div>
+        </div>
+        <div style="padding-bottom:10px;">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                <tr>
+                    <td class="tr_01" align="center" width="30px">번호</td>
+                    <td class="tr_01" align="left" width="65px">이미지</td>
+                    <td class="tr_01" align="left">제목</td>
+                    <td class="tr_01" align="center" width="100px">등록일</td>
+                </tr>
+                <tr v-if="boardList.length === 0">
+                    <td colspan="4" height="1px"  class="td_002" align="center">조회된 데이터가 없습니다</td>
+                </tr>
+                <!-- 데이터 있을 때 -->
+                <template v-else>
+                    <template v-for="(item, index) in boardList">
+                        <tr :key="item.no">
+                            <td class="td_01" align="center" ><span class="te_en">{{ totalElements - ((currentPage - 1) * pageSize + index) }}</span></td>
+                            <td class="td_01" align="left" width="30px">
+                                <a :href="`/board/blog_v?no=${item.id}`" class="wise_link_04">
+                                <img v-if="isImageFile(item.attach)"
+                                     :src="'/img/data/blog/' + item.attach"
+                                     width="60"
+                                     height="60"
+                                     style="border:1px solid #cccccc; object-fit:cover;"
+                                     :alt="item.attach"
+                                     @error="$event.target.src='/img/no_img.png'">
+                                </a>
+                            </td>
+                            <td class="td_01" align="left">
+                                <a :href="`/board/blog_v?no=${item.id}`" class="mn_list">
+                                    <div style="padding-top:8px;padding-bottom:8px;">
+                                        <div class="sz_13 te_le te_gn2" style="padding-top:5px;"><b>{{ item.subject }}</b></div>
+                                        <div class="te_do sz_11 te_le te_gray2" style="padding-top:7px;line-height:14px; text-overflow:ellipsis; width:500px;height:25px;overflow:hidden">{{ item.shortContents }}</div>
+                                    </div>
+                                </a>
+                            </td>
+                            <td class="td_01" align="center"><span class="te_en te_le sz_11">{{ item.formattedDateTime }}</span></td>
+                        </tr>
+                    </template>
+                </template>
+            </table>
+        </div>
+        <div style="padding-top:10px; padding-bottom:20px;text-align:center;">
+            <!-- 페이징 처리 -->
+            <div class="page" v-if="totalPages > 0">
+                <p>
+                    <!-- 이전 페이지 -->
+                    <a href="javascript:void(0)"
+                       :class="{'off': currentPage === 1}"
+                       @click="changePage(currentPage - 1)"
+                       v-if="currentPage > 1">
+                        &lt;
+                    </a>
+
+                    <!-- 페이지 번호들 -->
+                    <a href="javascript:void(0)"
+                       v-for="pageNum in getPageNumbers()"
+                       :key="pageNum"
+                       :class="{'on': pageNum === currentPage}"
+                       @click="changePage(pageNum)">
+                        {{ pageNum }}
+                    </a>
+
+                    <!-- 다음 페이지 -->
+                    <a href="javascript:void(0)"
+                       :class="{'off': currentPage === totalPages}"
+                       @click="changePage(currentPage + 1)"
+                       v-if="currentPage < totalPages">
+                        &gt;
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: "#Board",
+        data: {
+            boardList: [],
+            currentPage: 1,
+            totalPages: 0,
+            pageSize: 10,
+            totalElements: 0,
+            setPage: 5,
+            searchParams: {
+            },
+        },
+        created() {
+            this.loadData();
+        },
+        methods: {
+            async loadData(page = 1) {
+                 try {
+                    const response = await axios.get('/api/board/blog', {
+                        params: {
+                            page: page,
+                            size: this.pageSize
+                        }
+                    });
+                     console.log(response.data.content);
+                    this.boardList = response.data.content || [];
+                    this.currentPage = response.data.currentPage || 1;
+                    this.totalPages = response.data.totalPages || 0;
+                    this.totalElements = response.data.totalElements || 0;
+
+                 } catch (error) {
+                    console.error('Data 紐⑸줉 濡쒕뱶 �ㅽ뙣:', error);
+                    this.boardList = [];
+                    alert('데이터를 불러오는데 실패했습니다.');
+                 }
+            },
+             // 페이지 변경
+            changePage(page) {
+                if (page < 1 || page > this.totalPages || page === this.currentPage) {
+                    return;
+                }
+                this.loadData(page);
+                // 페이지 상단으로 스크롤
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+            getPageNumbers() {
+                const pageGroupSize = 10; // PHP의 bbs_page_scale
+                let pageStart = Math.floor(this.currentPage / pageGroupSize) * pageGroupSize + 1;
+
+                if ((this.currentPage % pageGroupSize) === 0) {
+                    pageStart -= pageGroupSize;
+                }
+
+                const pageEnd = Math.min(pageStart + pageGroupSize - 1, this.totalPages);
+                const pages = [];
+
+                for (let i = pageStart; i <= pageEnd; i++) {
+                    pages.push(i);
+                }
+
+                return pages;
+            },
+            isImageFile(filename) {
+                if (!filename) return false;
+                const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.png'];
+                const lowerName = filename.toLowerCase();
+                return imageExtensions.some(ext => lowerName.endsWith(ext));
+            },
+
+            // 이미지 경로 생성
+            getImagePath(attach) {
+                if (!attach || !this.isImageFile(attach)) {
+                    return '/img/no_img.png';
+                }
+                return '/img/data/blog/' + attach;
+            }
+        }
+    });
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

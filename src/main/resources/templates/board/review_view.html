@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:25px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_05.gif}">
+    </div>
+    <div style="display:block;overflow:hidden;padding-top:15px;" id="Board">
+        <div style="float:left;">
+            <div style="display: flex;">
+                <!-- 모든 a 태그를 나란히 배치 -->
+                <!-- 첫번째 탭 -->
+                <a th:href="@{/board/ev_main}">
+                    <img th:src="${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/ev_main')}"
+                         th:attr="data-normal=${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         data-hover="/img/common/tab_event_01_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 두번째 탭 -->
+                <a th:href="@{/board/review_main}">
+                    <img th:src="${currentPage.startsWith('/board/review_main') || currentPage.startsWith('/board/review_v') ? '/img/common/tab_event_02_over.gif' : '/img/common/tab_event_02.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/review_main')}"
+                         data-normal="/img/common/tab_event_02.gif"
+                         data-hover="/img/common/tab_event_02_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 세번째 탭 -->
+                <a th:href="@{/board/winner_main}">
+                    <img th:src="${currentPage.startsWith('/board/winner_main') || currentPage.startsWith('/board/winner_v') ? '/img/common/tab_noti_03_over.gif' : '/img/common/tab_noti_03.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/winner_main')}"
+                         data-normal="/img/common/tab_noti_03.gif"
+                         data-hover="/img/common/tab_noti_03_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 네번째 탭 -->
+                <a th:href="@{/product/social}">
+                    <img th:src="${currentPage.startsWith('/product/social') ? '/img/common/tab_noti_04_over.gif' : '/img/common/tab_noti_04.gif'}"
+                         th:data-active="${currentPage != null && currentPage.startsWith('/product/social')}"
+                         data-normal="/img/common/tab_noti_04.gif"
+                         data-hover="/img/common/tab_noti_04_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+            </div>
+        </div>
+
+        <div style="text-align:right;padding-bottom:5px;">
+            <!--<select><option>제목</option>
+            <option>내용</option></select>
+            <input type="text" size="18" class="input_notice">
+            --->
+            &nbsp;
+        </div>
+    </div>
+    <div id="Review_view">
+        <div style="padding-bottom:10px;">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                <tr>
+                    <td class="tr_view" align="left"><span style="margin-right:10px;"class="te_gn2">[<b>이벤트 후기</b>] </span>  {{boardData.title}}
+                        <div style="float:right;padding-right:10px;" class="te_do te_le sz_11"></div></td>
+                </tr>
+                <tr>
+                    <td class="td_view" align="left">
+                        <div style="float:left;padding-left:10px;" class="te_do te_le sz_11">
+                            작성자 : <span class="te_en sz_11 te_gray">{{boardData.userid}} </span></div>
+                        <div style="float:right;padding-right:10px;" class="te_do te_le sz_11">
+                            작성일 : <span class="te_en sz_11 te_gray">{{boardData.formattedDateTime}} </span></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_view"align="left" colspan="3">
+                        <div style="padding:15px; line-height:20px;" class="te_do te_gray04 sz_12"  v-html="boardData.contents">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="padding-bottom:20px;text-align:right;"><a href="/board/review_main">목록</a></div>
+        <div>
+            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                    <td class="tr_list_01" align="center" width="70px"><span class="te_en">이전글</span></td>
+                    <td class="tr_list_01" align="left" v-if="boardData.previousReview">
+                        <a :href="`/board/review_v?no=${boardData.previousReview.id}`">
+                            {{ boardData.previousReview.title }}
+                        </a>
+                    </td>
+                    <td class="tr_list_01" align="left" v-else>
+                        이전글이 없습니다
+                    </td>
+                    <td class="tr_list_01" align="center">
+                        <span class="te_en te_le sz_11" v-if="boardData.previousReview">
+                        {{boardData.previousReview.formattedDate}}</span>
+                        <span class="te_en te_le sz_11" v-else>0000-00-00</span>
+                    </td>
+                 <!--<td class="tr_list_01" align="center" width="50px"><span class="te_en te_le sz_11">256</span></td>--->
+                </tr>
+                <tr>
+                    <td class="tr_list_02" align="center"><span class="te_en">다음글</span></td>
+                    <td class="tr_list_02" align="left" v-if="boardData.nextReview">
+                        <a :href="`/board/review_v?no=${boardData.nextReview.id}`">
+                            {{ boardData.nextReview.title }}
+                        </a>
+                    </td>
+                    <td class="tr_list_02" align="left" v-else>
+                        다음글이 없습니다
+                    </td>
+                    <td class="tr_list_02" align="center">
+                        <span class="te_en te_le sz_11" v-if="boardData.nextReview">
+                        {{boardData.nextReview.formattedDate}}</span>
+                        <span class="te_en te_le sz_11" v-else>0000-00-00</span>
+                    </td>
+                <!--<td class="tr_list_02" align="center"><span class="te_en te_le sz_11">256</span></td>--->
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+ new Vue({
+    el: '#Review_view',
+    data: {
+        boardData : {},
+        //이전, 다음글
+        prevBoard: null,
+        nextBoard: null,
+
+    },
+    computed: {},
+    created : function() {
+        this.loadData();
+    },
+    methods: {
+        getBoardNo: function() {
+            const no = getQueryParam("no");
+            return no ? parseInt(no) : 1;
+        },
+
+        loadData: function() {
+            var vm = this;
+            var boardNo = this.getBoardNo();
+
+            this.incrementView(boardNo);
+
+            console.log("게시물 번호111 :", boardNo);
+
+            axios.get(`/api/board/review/view?no=${boardNo}`)
+                .then(response => {
+                console.log(response);
+                    if (response.data.data) {
+                        vm.boardData = response.data.data.board || response.data.data;
+                    } else {
+                        vm.boardData = response.data;
+                    }
+                    console.log(vm.boardData);
+                })
+                .catch(error => {
+                    console.error("데이터 로드 실패:", error);
+
+                });
+
+        },
+        incrementView : function(no) {
+            axios.post(`/api/board/review/${no}/hit`)
+            .then(() => { console.log(`조회수 증가 완료 : ${no} 번`);})
+            .catch(error => { console.warn("조회수 증가 실패:", error);});
+        }
+    }
+});
+</script>
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

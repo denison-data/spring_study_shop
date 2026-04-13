@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+
+<!--    <form name="form1" method="post" action="/member/shop_cart" target="iframes1">-->
+<!--    <input type="hidden" name="refers" id="refers">-->
+<!--    <input type="hidden" name="mode" id="add">-->
+<!--    <input type="hidden" name="pcs" id="pcs">-->
+<!--    <input type="hidden" name="Type" id="Type">-->
+<!--    <input type="hidden" name="Code" id="Code">-->
+    <form name="form1" method="post" id="frm1">
+    <div id="main">
+        <div style="padding-top:15px;">
+            <div style="width:740px;height:400px; position:relative;display:inline-block;vertical-align:top;">
+                <div th:style="'position:absolute;top:230px;left:260px; z-index:2000; width:108px;height:108px; text-align:center;font-family:verdana;background:url('+@{/img/common/icon_save.png}+') no-repeat;color:black;padding-top:24px;letter-spacing:-2px;'"><span style="font-size:38px;font-weight:bold;" id="rates">{{discountRate}}</span><span style="font-size:18px;">%</span></div>
+                <div th:style="'position:absolute;left:30px; z-index:700;background-color:#7fc021;color:white;font-size:13px;padding:10px;'" class="te_b te_le">{{product.comment}}</div>
+                <div th:style="'position:absolute;top:45px; left:30px; z-index:700;width:250px;height:150px;'">
+                    <ul>
+                        <li th:style="'text-align:left; font-size:20px;color:#fffa76;vertical-align:top;width:250px;height:25px;overflow:hidden; text-overflow:ellipsis; '" class="te_b te_le">{{ product.mdName }} </li>
+                        <li th:style="'text-align:left; font-size:28px;color:#ffffff;vertical-align:top;width:450px;height:60px;overflow:hidden; text-overflow:ellipsis; '" class="te_b te_le">{{product.name}}</li>
+                        <li th:style="'text-align:left; padding-top:5px;font-size:11px;color:#b4b4b4;vertical-align:top;line-height:16px; width:250px;height:70px;overflow:hidden; text-overflow:ellipsis;'" class="te_do te_le">
+                            <b>{{ product.productAdditionalInfo }}</b></li>
+                    </ul>
+                </div>
+
+                 <div th:style="'position:absolute;top:230px; left:15px; z-index:700;width:270px;height:165px; background:url('+@{/img/common/price_bg.png}+')'">
+                    <ul>
+                        <li th:style="'text-align:right; padding-right:28px;padding-top:27px;font-size:25px;color:#951c43;vertical-align:top;' " class="te_en te_b te_deco te_le" id="prices_real">{{formatNumber(currentRealPrice)}}<span class="te_do sz_18">원</span></li>
+                        <li th:style="'text-align:right; padding-right:28px;font-size:32px;color:white; vertical-align:top;'" class="te_en te_b te_le" id="prices" >{{formatNumber(currentMemberPrice)}}<span class="te_do sz_18">원</span></li>
+                    </ul>
+                </div>
+                <div><img :src="'/img/product/' + product.code + '/' + product.bigImage" ></div>
+            </div>
+        </div>
+        <div style="padding-top:10px;width:740px;">
+            <div style="background-color:#ececec;border:3px solid #8d8d8d;">
+                <div style="padding:10px">
+                    <table cellspacing="0"cellpadding="0" border="0" style="width:100%">
+                        <tr>
+                            <td class="tr_detail" align="left">옵션정보</td>
+                            <td class="tr_detail" align="center">상품옵션</td>
+                            <td class="tr_detail" align="center">수량</td>
+                            <td class="tr_detail" align="center">정상가격</td>
+                            <td class="tr_detail" align="center">결제가격</td>
+                        </tr>
+                        <tr>
+                            <td class="td_detail" align="left" style="line-height:16px;">{{product.name}}</td>
+                            <td class="td_detail" align="center">
+                                <select name="option1" v-model="selectedOptionId" @change="updatePrice">
+                                    <option v-for="opt in product.option_array"
+                                            :key="opt.id"
+                                            :value="opt.id">
+                                        {{ opt.optionName }} - {{ opt.memberPrice }}원
+                                    </option>
+                                </select>
+                            </td>
+                            <td class="td_detail" align="center">
+                                <select name="qty" size="1" class="select" >
+                                    <option v-for="n in 5" :key="n" :value="n">
+                                        {{ n }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td class="td_detail" align="center"><span class="te_en"  id="prices_real2" style='text-decoration:line-through'>{{ formatNumber(currentRealPrice) }}</span> 원</span></td>
+                            <td class="td_detail" align="center"><span class="te_b te_en sz_15 te_pink" id="prices2">{{ formatNumber(currentMemberPrice) }}</span><span class="te_pink"> 원</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div style="padding-top:15px;text-align:right;width:740px;">
+            <a onclick="javascript:CheckForm(form1);" style="cursor:pointer;">
+                <img th:src="@{/img/common/btn_buy_02.gif}" style="margin-right:5px">
+            </a>
+            <a @click="addcart" style="cursor:pointer;">
+                <img th:src="@{/img/common/btn_cart_02.gif}" >
+            </a>
+        </div>
+        <div style="padding:20px 0;"></div>
+        <div style="padding-top:10px;width:740px;">
+            <div style="background-color:#ececec;border:3px solid #8d8d8d;">
+                <div style="padding:20px 0px;">
+                    <table width="740" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td colspan="9" style="padding:0px 26px 10px 26px;"><img th:src="@{/img/common/detail_protitle.png}" width="356" height="19" /></td>
+                        </tr>
+                        <tr>
+                            <template v-for="(item, index) in prod_etc_array">
+                                <td :width="index % 4 === 0 ? 26 : 8">&nbsp;</td>
+                                <td width="166">
+                                    <table width="166" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td style="border:1px solid #d5d5d5;" width="166" height="100">
+                                                <a :href="`/product/detail?code=${item.code}`" class="list">
+                                                    <img :src="`/img/product/${item.code}/${item.smallPicture}`" width="166" height="100" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-top:10px;">
+                                                <div class="main_ch">
+                                                    <ul>
+                                                        <a :href="`/product/detail?code=${item.code}`" class="list">
+                                                            <li class="ch_text">
+                                                                <b>[{{ item.mnName || '브랜드' }}]</b><br />
+                                                                {{ item.mdName || '모델명' }}<br />
+                                                                {{ item.name }}
+                                                            </li>
+                                                            <li class="price_01" v-if="item.option_array && item.option_array.length > 0">
+                                                                <span class="te_en">{{ $formatPrice(item.option_array[0].realPrice) }}</span>
+                                                            </li>
+                                                            <li class="price_02" v-if="item.option_array && item.option_array.length > 0">
+                                                                <span class="te_en">{{ $formatPrice(item.option_array[0].memberPrice) }}</span>원
+                                                            </li>
+                                                        </a>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </template>
+
+                            <!-- 빈칸 채우기 -->
+                            <template v-if="prod_etc_array.length % 4 !== 0">
+                                <template v-for="n in (4 - (prod_etc_array.length % 4))">
+                                    <td width="8">&nbsp;</td>
+                                    <td width="166">
+                                        <table width="166" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="border:1px solid #d5d5d5;" width="166" height="100">
+                                                    <img src="/img/common/detail_noimg.gif" width="166" height="100" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top:10px;">
+                                                    <div class="main_ch">
+                                                        <ul>
+                                                            <li class="ch_text">
+                                                                [<b>Wisefood</b>]<br />
+                                                                업체 관련 상품이 없습니다<br />
+                                                                추가해주세요
+                                                            </li>
+                                                            <li class="price_01"><span class="te_en">&nbsp;</span></li>
+                                                            <li class="price_02"><span class="te_en">&nbsp;</span></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </template>
+                            </template>
+
+                            <td width="26">&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </form>
+        <div style="padding:20px 0;"></div>
+
+<!--        <iframe  name="center" id="center" src="./list_good?code="  topmargin="0" leftmargin="0" frameborder="0" framespacing="0"  width="100%" scrolling="no"  onload="this.style.height=this.contentWindow.document.body.scrollHeight;"></iframe>-->
+        <div id="mainContent">
+            <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+                <tr>
+                    <td class="tr_01" align="center" width="30px">번호</td>
+                    <td class="tr_01" align="left" width="65px">상품</td>
+                    <td class="tr_01" align="left">제목</td>
+                    <td class="tr_01" align="center" width="70px">점수</td>
+                    <td class="tr_01" align="center" width="60px">등록일</td>
+                    <td class="tr_01" align="center" width="40px">조회수</td>
+                </tr>
+
+
+                <tr v-if="reviewList.length === 0">
+                    <td colspan="6" class="td_01" align="center">등록된 리뷰가 없습니다.</td>
+                </tr>
+
+                <tr v-for="(row, index) in reviewList" :key="row.no">
+                    <td class="td_01" align="center"><span class="te_en">{{ totalElements - (currentPage - 1) * pageSize - index }}</span></td>
+                    <td class="td_01" align="left" width="30px">
+                        <a :href="`/board/expo_v?no=${row.no}&page=${currentPage}&set_page=${pageSize}`" target="_top">
+                            <img v-if="row.productCode"
+                                 :src="'/img/product/' + row.productCode + '/' +row.smallpicture"
+                                 width="65"
+                                 height="65"
+                                 style="border:1px solid #cccccc; object-fit:cover;"
+                                 :alt="row.smallpicture"
+                                 @error="$event.target.src='/img/no_img.png'">
+                        </a>
+                    </td>
+                    <td class="td_01" align="left">
+                        <a :href="`/board/exper_v?no=${row.id}&page=${currentPage}&set_page=${pageSize}`" target="_top">
+                            <div style="padding-top:8px;padding-bottom:8px;">
+                                <div class="te_black sz_11">[<b>{{ row.goodname }}</b>]</div>
+                                <div class="sz_13 te_le te_gn2" style="padding-top:5px;"><b>{{ row.subject }}</b></div>
+                                <div class="te_do sz_11 te_le te_gray2" style="padding-top:7px;line-height:14px; text-overflow:ellipsis; width:380px;height:25px;overflow:hidden" v-html="cutText(row.shortContents, 115)"></div>
+                            </div>
+                        </a>
+                    </td>
+                    <td class="td_01" align="left">
+                        <img :src="getStarImage(row.starPoint)" align="absmiddle" />&nbsp;
+                    </td>
+                    <td class="td_01" align="center">
+                        <span class="te_en te_le sz_11">{{ formatDate(row.wdate) }}</span>
+                    </td>
+                    <td class="td_01" align="center">
+                        <span class="te_en te_le sz_11">{{ formatNumber(row.hit) }}</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="6" height="2px" style="background-color:#cccccc;"></td>
+                </tr>
+            </table>
+
+            <div style="padding-top:10px; padding-bottom:20px;text-align:center;">
+                <!-- 페이징 처리 -->
+                <div class="page" v-if="totalPages > 0">
+                    <p>
+                        <!-- 이전 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === 1}"
+                           @click="changePage(currentPage - 1)"
+                           v-if="currentPage > 1">
+                            &lt;
+                        </a>
+
+                        <!-- 페이지 번호들 -->
+                        <a href="javascript:void(0)"
+                           v-for="pageNum in getPageNumbers()"
+                           :key="pageNum"
+                           :class="{'on': pageNum === currentPage}"
+                           @click="changePage(pageNum)">
+                            {{ pageNum }}
+                        </a>
+
+                        <!-- 다음 페이지 -->
+                        <a href="javascript:void(0)"
+                           :class="{'off': currentPage === totalPages}"
+                           @click="changePage(currentPage + 1)"
+                           v-if="currentPage < totalPages">
+                            &gt;
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding-top:15px;">
+            <p><div th:utext="${product.formattedDescription}"></div></p>
+        </div>
+
+        <div style="padding-top:10px; ">
+            <p th:if="${product.formattedDescription != null and !product.formattedDescription.isEmpty()}"
+               th:utext="${product.formattedOemInfo}">
+            </p>
+        </div>
+
+        <div style="width:740px;padding-top:10px;padding-bottom:20px;">
+            <div style="padding-top:25px;"><img th:src="@{/img/common/detail_hu_100.gif}"></div>
+<!--            <iframe th:src="@{./inc_h_01?code=code}"  name="inc_h_01"   topmargin="0" leftmargin="0" frameborder="0" framespacing="0"  width="754"  marginwidth="0" marginheight="0"  scrolling="no"  id="inc_h_01" onload="autoResize(this)" >-->
+<!--            </iframe>-->
+            <div id="bottomReview">
+                <table width="740" style="border:2px solid #bed600" cellpadding="0" cellspacing="0">
+                    <tr><td height="50" align="left" class="te_le" style="padding-left:15px;background-color:#c2dd13;" colspan="2"><span class="te_en sz_25 te_black te_b">{{totalElements2}}</span>&nbsp;<span class=" te_do sz_12 te_gray4">개의 상품평이 있습니다.</td></tr>
+                    <tr v-if="reviewList2.length === 0">
+                        <td colspan="2" class="td_01" align="center">등록된 리뷰가 없습니다.</td>
+                    </tr>
+
+                    <template v-for="(row, index) in reviewList2" :key="row.no">
+                    <tr>
+                        <td class="td_read_01" align="left" width="80px" style="border-bottom:dashed 1px #CBCDEB;padding-left:15px;">
+                            <img v-if="row.starPoint"
+                                 :src="'/img/common/st_0' + row.starPoint + '.gif'">
+                        </td>
+                        <td class="td_read_01" align="left" style="border-bottom:dashed 1px #CBCDEB;">
+                            <table cellspacing="0" cellpadding="0" width="100%" border="0">
+                                <tr><td class="te_do te_gray2 te_le sz_11" height="22" valign="top">
+                                    <a href="javascript:void(0)" @click="toggleContent(index)">
+                                    {{ row.subject }}
+                                    <br><img th:src="@{/img/common/blank.gif}" width="1" height="3"><br>
+                                    (이름 : <span class="te_do te_b">{{row.orderId}})</span> / 작성일 : <span class="te_en">{{ row.formattedDate }}</span>)
+                                    </a>
+                                </td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr v-if="openIndex === index">
+                        <td colspan="2" class="td_read_02 te_gray2 sz_12" align="left" v-html="row.contents"></td>
+                    </tr>
+                    </template>
+                </table>
+
+                <div style="padding-top:10px; padding-bottom:20px;text-align:center;">
+                    <!-- 페이징 처리 -->
+                    <div class="page" v-if="totalPages2 > 0">
+                        <p>
+                            <!-- 이전 페이지 -->
+                            <a href="javascript:void(0)"
+                               :class="{'off': currentPage2 === 1}"
+                               @click="changePage2(currentPage2 - 1)"
+                               v-if="currentPage2 > 1">
+                                &lt;
+                            </a>
+
+                            <!-- 페이지 번호들 -->
+                            <a href="javascript:void(0)"
+                               v-for="pageNum2 in getPageNumbers2()"
+                               :key="pageNum2"
+                               :class="{'on': pageNum2 === currentPage2}"
+                               @click="changePage2(pageNum2)">
+                                {{ pageNum2 }}
+                            </a>
+
+                            <!-- 다음 페이지 -->
+                            <a href="javascript:void(0)"
+                               :class="{'off': currentPage2 === totalPages2}"
+                               @click="changePage2(currentPage2 + 1)"
+                               v-if="currentPage2 < totalPages2">
+                                &gt;
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+        <!-- 성퓸보기 include --->
+    <div id="right" th:replace="createfiles/product_right :: product_right"></div>
+    <!-- top.html의 header 부분 include -->
+    <div th:replace="layout/bottom :: bottom"></div>
+
+<script>
+new Vue({
+    el: '#main',
+    data: {
+        product: {
+            productCode: '',
+            productName: '',
+            description: '',
+            price: 0,
+            delFlag: 'n',
+            salePrice: 0,
+            stock: 0,
+            category: '',
+            brand: '',
+            imageUrl: '',
+            images: [],
+            rating: 0,
+            reviewCount: 0,
+            status: ''
+        },
+        selectedImage: '',
+        loading: true,
+        error: null,
+        selectedOptionId: null,
+        currentRealPrice: 0,
+        currentMemberPrice: 0,
+        discountRate: 0,
+        prod_etc_array: [], // 추천 상품 리스트
+        reviewList: [],
+        currentPage: 1,
+        pageSize: 3,
+        totalPages: 0,
+        totalElements: 0,
+
+        openIndex: null,
+        reviewList2: [],
+        currentPage2: 1,
+        pageSize2: 4,
+        totalPages2: 0,
+        totalElements2: 0,
+    },
+    mounted() {
+
+        this.loading = true;
+        this.error = null;
+        // URL에서 상품 코드 추출
+        const urlParams = new URLSearchParams(window.location.search);
+        const productCode = urlParams.get('code') || 'P001'; // 기본값
+
+        // API 호출
+        axios.get(`/api/product/code/${productCode}`)
+            .then(response => {
+           if (response.data.status === 'success') {
+                this.product = response.data.data;
+                this.prod_etc_array = this.product.prod_etc_array;
+                if (this.product.option_array.length > 0) {
+                    this.selectedOptionId = this.product.option_array[0].id;
+                    this.updatePrice();
+                }
+                console.log(this.product);
+            } else {
+                this.error = response.data.message;
+                console.log(this.error);
+            }
+
+        })
+        .catch(error => {
+            console.error('상품 조회 실패:', error);
+            this.error = '상품 정보를 불러오는데 실패했습니다.';
+        })
+        .finally(() => {
+            this.loading = false;
+            this.fetchReviews(productCode, this.currentPage);
+
+            this.fetchBottomReviews(productCode, this.currentPage);
+        });
+    },
+    methods: {
+        toggleContent(index) {
+            this.openIndex = (this.openIndex === index ? null : index);
+        },
+        async addcart(){
+            console.log("카트쪽");
+            const form = document.getElementById("frm1");
+            const formData = new FormData(form);
+
+            // 모든 key/value 출력
+            for (let [key, value] of formData.entries()) {
+              console.log(key, value);
+            }
+            const parts = formData.get("option1").split("_");
+            const optionNumber = parts[1];
+
+             const payload = {
+                productNo: this.product.id,
+                productType: this.product.type,
+                optionNo: optionNumber,
+                optionA: this.product.optionA || "",
+                optionB: this.product.optionB|| "",
+                refer_urls: "",
+                quantity: formData.get("qty")
+            };
+
+            console.log(payload);
+            console.log(this.product);
+            try {
+                await axios.post('/api/product/shopping_cart', payload);
+                location.href="/product/cart";
+            } catch (err) {
+              console.log(err);
+            }
+
+        },
+        fetchBottomReviews(code, page) {
+          console.log(page);
+          axios.get(`/api/board/goodreview/${code}?division=review&page=${page}&size=${this.pageSize2}`)
+                .then(res => {
+                  const data = res.data;
+                  this.reviewList2 = data.content;
+                  this.totalPages2 = data.totalPages;
+                  this.totalElements2 = data.totalElements;
+                  this.currentPage2 = data.currentPage;
+                  console.log(this.reviewList2);
+            })
+                .catch(err => {
+                  console.error('리뷰 조회 실패:', err);
+            });
+        },
+        fetchReviews(code, page){
+           axios.get(`/api/board/goodreview/${code}?page=${page}&size=${this.pageSize}`)
+                .then(res => {
+                  const data = res.data;
+                  this.reviewList = data.content;
+                  this.totalPages = data.totalPages;
+                  this.totalElements = data.totalElements;
+                  this.currentPage = data.currentPage;
+                  console.log(this.reviewList);
+            })
+                .catch(err => {
+                  console.error('리뷰 조회 실패:', err);
+            });
+        },
+        isImageFile(filename) {
+           if (!filename) return false;
+           const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.png'];
+           const lowerName = filename.toLowerCase();
+           return imageExtensions.some(ext => lowerName.endsWith(ext));
+        },
+         getStarImage(point) {
+            if (point == 1 ) point = 2;
+            return `/img/common/rating_0${point}.gif`;
+        },
+        getPageNumbers() {
+           const pageGroupSize = 10; // PHP의 bbs_page_scale
+           let pageStart = Math.floor(this.currentPage / pageGroupSize) * pageGroupSize + 1;
+
+           if ((this.currentPage % pageGroupSize) === 0) {
+               pageStart -= pageGroupSize;
+           }
+
+           const pageEnd = Math.min(pageStart + pageGroupSize - 1, this.totalPages);
+           const pages = [];
+
+           for (let i = pageStart; i <= pageEnd; i++) {
+               pages.push(i);
+           }
+
+           return pages;
+       },
+       getPageNumbers2() {
+           const pageGroupSize2 = 4; // PHP의 bbs_page_scale
+           let pageStart2 = Math.floor(this.currentPage2 / pageGroupSize2) * pageGroupSize2 + 1;
+
+           if ((this.currentPage2 % pageGroupSize2) === 0) {
+               pageStart2 -= pageGroupSize2;
+           }
+
+           const pageEnd2 = Math.min(pageStart2 + pageGroupSize2 - 1, this.totalPages2);
+           const pages2 = [];
+
+           for (let i = pageStart2; i <= pageEnd2; i++) {
+               pages2.push(i);
+           }
+
+           return pages2;
+       },
+       changePage(page) {
+            if (page < 1 || page > this.totalPages || page === this.currentPage) {
+                return;
+            }
+            const urlParams = new URLSearchParams(window.location.search);
+            const productCode = urlParams.get('code') || 'P001'; // 기본값
+            this.fetchReviews(productCode, page);
+        },
+        changePage2(page2) {
+            if (page2 < 1 || page2 > this.totalPages2 || page2 === this.currentPage2) {
+                return;
+            }
+            const urlParams = new URLSearchParams(window.location.search);
+            const productCode = urlParams.get('code') || 'P001'; // 기본값
+            this.fetchBottomReviews(productCode, page2);
+        },
+        formatDate(timestamp) {
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleString('ko-KR');
+        },
+        cutText(html, length) {
+            const text = html.replace(/<*>?/gm, '');
+            return text.length > length ? text.slice(0, length) + '...' : text;
+        },
+        $formatNumber(num) {
+            if (num == null) return '0';
+            return new Intl.NumberFormat('ko-KR').format(num);
+        },
+        $formatPrice(num) {
+            return this.$formatNumber(num) + '원';
+        },
+        updatePrice() {
+            const selected = this.product.option_array.find(
+                opt => opt.id === this.selectedOptionId
+            );
+            if (selected) {
+                this.currentRealPrice = selected.realPrice;
+                this.currentMemberPrice = selected.memberPrice;
+
+                // 할인율 계산 (소수점 버림)
+                if (this.currentRealPrice > 0) {
+                    this.discountRate = Math.floor(
+                        (1 - this.currentMemberPrice / this.currentRealPrice) * 100
+                    );
+                } else {
+                    this.discountRate = 0;
+                }
+            }
+        },
+        formatNumber(value) {
+            if (!value) return 0;
+            return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<div th:replace="layout/header :: header"></div>
+<div th:replace="main/content :: content"></div>
+<div id="right" th:replace="createfiles/main/Right :: Right"></div>
+<div id="mn_cs">
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" style="padding-top:25px; padding-bottom:10px;">
+        <tr>
+            <td width="190" align="left"><img th:src="@{/img/common/foot_ser_01.gif}"></td>
+            <td width="390" align="left"><img th:src="@{/img/common/foot_ser_02.gif}"></td>
+            <td width="400" align="left"><img th:src="@{/img/common/foot_ser_03.gif}"></td>
+        </tr>
+    </table>
+
+    <table cellspacing="0" cellpadding="0" border="0" style="border-top:2px solid #8f8f8f;border-bottom:2px solid #dcdcdc;">
+        <tr>
+            <td width="190" style="border-bottom:1px solid #dcdcdc;"><img th:src="@{/img/common/cs.gif}"></td>
+            <td width="390" style="border-bottom:1px solid #dcdcdc;vertical-align:top;">
+                <!-- 여기에 게시판 리스트--->
+                <div th:replace="main/mainboard :: mainboard"></div>
+                <!-- 끝---->
+            </td>
+            <td width="400"style="vertical-align:top">
+                <table cellspacing="1" cellpadding="0" border="0" style="background-color:#dcdcdc;" id="check_login">
+                    <tr>
+<!--                        <td><a class="topmn" <? if($SS_NX_S_V2[ID]){ ?> href="<?=_FILE_PATH_?>member/mem_od_h.php" <? } else { ?> href="<?=_FILE_PATH_?>member/me_o_h_login_form.php?Prev_URL=mem_od_h.php"<? } ?> ><img th:src="@{/img/common/ser_01.gif}"onmouseover="this.src='/img2/ser_01_over.gif'"onmouseout="this.src='/img2/ser_01.gif'"></a></td>-->
+<!--                        <td><a class="topmn" <? if($SS_NX_S_V2[ID]){ ?> href="<?=_FILE_PATH_?>member/mem_od_n.php" <? } else { ?> href="<?=_FILE_PATH_?>member/me_o_h_login_form.php?Prev_URL=mem_od_n.php"<? } ?> ><img th:src="@{/img/common/ser_02.gif}"onmouseover="this.src='/img2/ser_02_over.gif'"onmouseout="this.src='/img2/ser_02.gif'"></a></td>-->
+<!--                        <td><a class="topmn" <? if($SS_NX_S_V2[ID]){ ?> href="<?=_FILE_PATH_?>member/mypoint.php" <? } else { ?> href="<?=_FILE_PATH_?>member/me_o_h_login_form.php?Prev_URL=mypoint.php"<? } ?> ><img th:src="@{/img/common/ser_03.gif}"onmouseover="this.src='/img2/ser_03_over.gif'"onmouseout="this.src='/img2/ser_03.gif'"></a></td>-->
+<!--                        <td><a href="/cs/cs_prod_l.php"><img th:src="@{/img/common/ser_04.gif}"onmouseover="this.src='/img2/ser_04_over.gif'" onmouseout="this.src='/img/common/ser_04.gif'"></a></td>-->
+<!--                        <td><a href="mailto:wisefood@wisefood.co.kr"><img th:src="@{/img/common/ser_05.gif}"onmouseover="this.src='/img2/ser_05_over.gif'"onmouseout="this.src='/img/common/ser_05.gif'"></a></td>-->
+
+
+                        <td><a class="topmn" :href="orderLink"><img th:src="@{/img/common/ser_01.gif}"onmouseover="this.src='/img/common/ser_01_over.gif'"onmouseout="this.src='/img/common/ser_01.gif'"></a></td>
+                        <td><a class="topmn" :href="orderLink"><!-- 여기는 페이지 맞는지 체크--><img th:src="@{/img/common/ser_02.gif}"onmouseover="this.src='/img/common/ser_02_over.gif'"onmouseout="this.src='/img/common/ser_02.gif'"></a></td>
+                        <td><a class="topmn" :href="mypointLink"><img th:src="@{/img/common/ser_03.gif}"onmouseover="this.src='/img/common/ser_03_over.gif'"onmouseout="this.src='/img/common/ser_03.gif'"></a></td>
+                        <td><a th:href="@{/board/cs_main}"><img th:src="@{/img/common/ser_04.gif}"onmouseover="this.src='/img/common/ser_04_over.gif'" onmouseout="this.src='/img/common/ser_04.gif'"></a></td>
+                        <td><a href="mailto:wisefood@wisefood.co.kr"><img th:src="@{/img/common/ser_05.gif}"onmouseover="this.src='/img/common/ser_05_over.gif'"onmouseout="this.src='/img/common/ser_05.gif'"></a></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" height="72px"bgcolor="white"><img th:src="@{/img/common/ser_06.gif}"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr><td height="20px"></td></tr>
+    </table>
+</div>
+
+<!-- top.html의 header 부분 include -->
+    <div th:replace="layout/bottom :: bottom"></div>
+
+<script>
+    new Vue({
+      el: "#check_login",
+      data: {
+        isLoggedIn: false,
+        orderLink: "/login?redirect=/member/orders",
+        mypointLink : "/login?redirect=/member/point",
+      },
+      async mounted() {
+        // 페이지 로드 시 토큰 확인
+        this.isLoggedIn = !!localStorage.getItem("accessToken");
+        const token = localStorage.getItem("accessToken");
+        console.log("index:bottom - " +token);
+        if (token) {
+            try {
+                const response = await axios.get("/api/member/me", {
+                    headers: { Authorization: "Bearer " + token }
+                });
+                this.isLoggedIn = true;   // 서버에서 인증 성공
+                this.loadData = response.data;
+                this.orderLink = "/member/orders";
+                this.mypointLink = "/member/modify";
+            } catch (error) {
+                console.error("토큰 검증 실패:", error);
+                this.isLoggedIn = false;  // 토큰은 있지만 인증 실패 → 로그아웃 처리
+                localStorage.removeItem("accessToken");
+                this.orderLink = "/login?redirect=/member/orders";
+                this.mypointLink = "/login?redirect=/member/point";
+            }
+        } else {
+            // 비로그인 상태 → 로그인 페이지로 이동 (redirect 파라미터 포함)
+            this.orderLink = "/login?redirect=/member/orders";
+            this.myLink = "/login?redirect=/member/mypointLink";
+        }
+        console.log("index:bottom - "+this.isLoggedIn);
+      },
+      methods: {
+        logout() {
+            // 서버에 로그아웃 API 호출 (선택 사항)
+            axios.post("/api/auth/logout", {}, {
+                headers: { Authorization: "Bearer " + localStorage.getItem("accessToken") }
+            }).finally(() => {
+                console.log("토큰삭제");
+                // 토큰 삭제
+                localStorage.removeItem("accessToken");
+                this.isLoggedIn = false;
+                window.location.href = "/"; // 로그아웃 후 메인으로 이동
+            });
+        }
+
+      }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+<div style="padding-bottom:25px;padding-top:20px;">
+    <img th:src="@{/img/common/tit_05.gif}">
+</div>
+    <div style="display:block;overflow:hidden;padding-top:15px;">
+        <div style="float:left;">
+            <div style="display: flex;">
+                <!-- 모든 a 태그를 나란히 배치 -->
+                <!-- 첫번째 탭 -->
+                <a th:href="@{/board/ev_main}">
+                    <img th:src="${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         th:data-active="${page != null && currentPage.startsWith('/board/ev_main')}"
+                         data-normal="/img/common/tab_event_01.gif"
+                         data-hover="/img/common/tab_event_01_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 두번째 탭 -->
+                <a th:href="@{/board/review_main}">
+                    <img th:src="${currentPage.startsWith('/board/review_main') || currentPage.startsWith('/board/review_v') ? '/img/common/tab_event_02_over.gif' : '/img/common/tab_event_02.gif'}"
+                         th:data-active="${page != null && page.startsWith('/board/review_main')}"
+                         data-normal="/img/common/tab_event_02.gif"
+                         data-hover="/img/common/tab_event_02_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 세번째 탭 -->
+                <a th:href="@{/board/winner_main}">
+                    <img th:src="${currentPage.startsWith('/board/winner_main') || currentPage.startsWith('/board/winner_v') ? '/img/common/tab_noti_03_over.gif' : '/img/common/tab_noti_03.gif'}"
+                         th:data-active="${currentPage != null && currentPage.startsWith('/board/winner_main')}"
+                         data-normal="/img/common/tab_noti_03.gif"
+                         data-hover="/img/common/tab_noti_03_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 네번째 탭 -->
+                <a th:href="@{/product/social}">
+                    <img th:src="${currentPage.startsWith('/product/social') ? '/img/common/tab_noti_04_over.gif' : '/img/common/tab_noti_04.gif'}"
+                         th:data-active="${currentPage != null && currentPage.startsWith('/product/social')}"
+                         data-normal="/img/common/tab_noti_04.gif"
+                         data-hover="/img/common/tab_noti_04_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+            </div>
+        </div>
+        <div style="text-align:right;padding-bottom:5px;">
+            &nbsp;
+            <!--
+            <select name=""><option>제목</option>
+            <option>내용</option></select>
+            <input type="text" size="18" name="keyword" value="<?=$keyword?>" class="input_notice"></div>
+            --->
+        </div>
+    </div>
+    <div style="padding-bottom:10px;">
+        <table cellspacing="0"cellpadding="0" border="0" style="width:100%;" id="event_view">
+            <tr>
+                <td class="tr_view" align="left"><span style="margin-right:10px;"class="te_gn2">[<b>이벤트</b>] </span>  {{boardData.subject || '잘못된 접근입니다.'}}
+                    <div style="float:right;padding-right:10px;" class="te_do te_le sz_11">이벤트 응모기간 : {{boardData.formattedEventFrom}} ~ {{boardData.formattedEventTo}}</div></td>
+            </tr>
+            <tr>
+                <td class="td_view" align="left">
+                    <div style="float:left;padding-left:10px;" class="te_do te_le sz_11">
+                        작성자 : <span class="te_en sz_11 te_gray">관리자</span></div>
+                    <div style="float:right;padding-right:10px;" class="te_do te_le sz_11">
+                        발표일 : <span class="te_en sz_11 te_gray">{{boardData.eventWinDay}}</span></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td_view"align="left" colspan="3">
+                    <div style="padding:15px; line-height:20px;" class="te_do te_gray04 sz_12" >
+                        <div v-html="boardData.contents"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="padding-bottom:20px;text-align:right;"><a th:href="@{/board/ev_main}">목록</a></div>
+
+    <script>
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    new Vue({
+        el: '#event_view',
+        data: {
+            boardData : {},
+            //이전, 다음글
+            prevBoard: null,
+            nextBoard: null,
+
+        },
+        computed: {},
+        created : function() {
+            this.loadData();
+        },
+        methods: {
+            getBoardNo: function() {
+                const no = getQueryParam("no");
+                return no ? parseInt(no) : 1;
+            },
+
+            loadData: function() {
+                var vm = this;
+                var boardNo = this.getBoardNo();
+
+                if (!boardNo) {
+                    vm.errorMessage = '게시글 번호가 없습니다.';
+                    return;
+                }
+                vm.isLoading = true;
+                vm.errorMessage = '';
+                vm.boardData = {};
+
+                console.log('게시글 ' + boardNo + '번 로드 시작');
+
+                axios({
+                    method: "GET",
+                    url: "/api/board/event/view",
+                    params: {
+                        no: boardNo
+                    },
+                    timeout: 3000
+                })
+                .then(function(response) {
+                   if (response.data && response.data.status == 'success' ) {
+                     console.log(response);
+
+                        if (response.data.data) {
+                            vm.boardData = response.data.data.board || response.data.data;
+                            vm.prevBoard = response.data.data.prevBoard || null;
+                            vm.nextBoard = response.data.data.nextBoard || null;
+                        } else {
+                            vm.boardData = response.data;
+                        }
+                        console.log(vm.boardData);
+                         // 콘텐츠가 없을 경우
+                        if (!vm.boardData.contents) {
+                            vm.errorMessage = '콘텐츠가 없습니다.';
+                        }
+                    } else {
+                        vm.errorMessage = response.data?.message || '데이터를 불러오는데 실패했습니다.';
+                    }
+                })
+                .catch(function(error) {
+                     console.log('게시글 로드 오류 : ', error);
+                     if (error.response) {
+
+                     }
+                })
+                .finally(function() {
+                    vm.isLoading = false;
+                });
+            },
+        }
+    });
+    </script>
+</div>
+<div th:replace="layout/bottom :: bottom"></div>
+</html>

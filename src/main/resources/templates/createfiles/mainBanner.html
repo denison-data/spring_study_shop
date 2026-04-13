@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="mainBanner">
+    <script language="JavaScript">
+        var vjNowFrame = 1;
+        var vjMaxFrame = 3; // 사진 총 갯수
+        var vjStart = 0;
+        var vjToggleStop = 0;
+        function vjToggle() {
+
+            var next = vjNowFrame + 1;
+
+            if (next > vjMaxFrame) {
+                vjNowFrame = vjMaxFrame;
+                next = 1;
+            }
+
+            if (vjStart == 0) {
+                vjStart = 1;
+                setTimeout('vjToggle()', 4000);
+                return;
+            } else {
+                if (vjToggleStop==0) {
+                    vjContainer.filters[0].Apply();
+
+                    document.images['vjDIV'+next].style.display = "block";
+                    document.images['vjDIV'+vjNowFrame].style.display = "none";
+
+                    document.getElementById('m_img_numtab'+next).src="/img/common/icon_mn_0" + next + "_on.png";
+                    document.getElementById('m_img_numtab'+vjNowFrame).src="/img/common/icon_mn_0"+vjNowFrame+"_off.png";
+                    vjContainer.filters[0].Play(duration=3);
+
+
+                    if (vjNowFrame >= vjMaxFrame) vjNowFrame = 1;
+                    else vjNowFrame++;
+                }
+
+            }
+            setTimeout('vjToggle()', 4000);
+        }
+        function imgnumview(no) {
+            for (var i=1; i<=3; i++) {
+                obj = eval('document.all.vjDIV'+i);
+                if (no == i) {
+                    obj.style.display = "block";
+                    document.getElementById('m_img_numtab'+i).src="/img/common/icon_mn_0"+i+"_on.png";
+                } else {
+                    obj.style.display = "none";
+                    document.getElementById('m_img_numtab'+i).src="/img/common/icon_mn_0"+i+"_off.png";
+                }
+                vjToggleStop=1;
+            }
+        }
+
+        function ToggleRestart(v1) {
+            vjStart = 0;
+            vjToggleStop = 0;
+            vjNowFrame=v1;
+            //vjToggle();
+        }
+        vjToggle();
+    </script>
+    <table cellspacing="0"cellpadding="0" border="0" style="padding-top:25px;vertical-align:top;">
+        <tr><td>
+
+            <div style="margin:0px; position:relative;display:inline-block;z-index:999;width:740px;">
+                <div style="position:absolute;top:315px; left:595px;">
+                    <a href="#" onfocus="this.blur()"><img th:src="@{/img/common/icon_mn_01_on.png}" id="m_img_numtab1" onMouseOver="imgnumview(1);" onMouseOut="ToggleRestart(1);" ></a>
+                    <a href="#" onfocus="this.blur()"><img th:src="@{/img/common/icon_mn_02_off.png}" id="m_img_numtab2" onMouseOver="imgnumview(2);" onMouseOut="ToggleRestart(2);" ></a>
+                    <a href="#" onfocus="this.blur()"><img th:src="@{/img/common/icon_mn_03_off.png}" id="m_img_numtab3" onMouseOver="imgnumview(3);" onMouseOut="ToggleRestart(3);" ></a>
+
+                </div>
+            </div>
+            <div id="vjContainer" style="width:740;height:360;filter:progid:DXImageTransform.Microsoft.Wipe(GradientSize=1.0, wipeStyle=0, motion='forward')">
+
+                <a th:href="@{/product/detail?code=W_A1301H&Cat_Content=W_Feat&Types=W_F_cate7}" ><img th:src="@{/img/adver/MainBanner/1328492277_bn_main.jpg}" id='vjDIV1'  style="display:block;"   width="740" height="360"></a>
+                <a th:href="@{/product/detail?code=wisefood_licoverS&Cat_Content=Best10&Types=Best10}" ><img th:src="@{/img/adver/MainBanner/1325649115_main_bn_07.jpg}" id='vjDIV2'  style="display:none;"   width="740" height="360"></a>
+                <a th:href="@{/product/detail?code=W_A1801H&Cat_Content=Best10&Types=Best10}" ><img th:src="@{/img/adver/MainBanner/1321420404_main_bn_05.jpg}" id='vjDIV3'  style="display:none;"   width="740" height="360"></a>
+
+            </div>
+        </td></tr>
+    </table>
+
+</div>

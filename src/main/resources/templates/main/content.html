@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="content">
+    <div id="cen_contents">
+        <div id="main">
+            <table width="100%" cellspacing="0"cellpadding="0" border="0">
+                <tr><td width="740">
+                    <div th:replace="createfiles/mainBanner :: mainBanner"></div>
+                </td>
+                </tr>
+            </table>
+            <div style="height:10px;">
+            </div>
+            <div th:replace="createfiles/main/MD_main :: MD_main"></div>
+            <!-- 특가이벤트 광고 배너 1--->
+            <div th:replace="createfiles/main/TG_Event :: TG_Event"></div>
+            <!-- //특가이벤트 광고 끝--->
+            <br><br>
+            <!-- 기능별 추천상품 배너 2--->
+            <div th:replace="createfiles/main/Func_Best :: Func_Best"></div>
+
+            <br><br><br>
+            <!-- 지역별 추천상품 --->
+            <div th:replace="createfiles/main/Area_Best :: Area_Best"></div>
+            <!-- 지역별 추천상품 끝--->
+
+            <!-- 건강별 추천상품 --->
+            <div th:replace="createfiles/main/Helt_Best :: Helt_Best"></div>
+            <!-- 건강별 추천상품 끝--->
+
+            <table width="740" cellspacing="0"cellpadding="0" border="0">
+                <tr><td><img th:src="@{/img/common/mn_tit_spa.gif}"></td></tr>
+                <tr><td>
+                    <!-- 스킨케어 특별관 --->
+                    <div th:replace="createfiles/main/Skin_P :: Skin_P"></div>
+                    <!-- 스킨케어 특별관 끝--->
+                    <!-- 비타민 특별관 --->
+                    <div th:replace="createfiles/main/Vita_P :: Vita_P"></div>
+                    <!-- 비타민 특별관 끝--->
+                    <!-- 홍삼 특별관 --->
+                    <div th:replace="createfiles/main/Hong_P :: Hong_P"></div>
+                    <!-- 홍삼 특별관 끝--->
+                </td></tr>
+            </table>
+        </div>
+    </div>
+</div>

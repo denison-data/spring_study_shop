@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+
+<!-- 여기 기본 준비중ㅇ--->
+<style>
+    body{margin:0px;padding:0px;}
+    img{border:0px;}
+
+    /*.so_top{border-top:5px solid #252525;}*/
+    .so_top {display:block; overflow:hidden;border-bottom:1px solid #cccccc; border-top:2px solid #aec63c;width:750px;padding-bottom:10px;}
+    .main_p{padding: 0px 20px;font-size:22px;color:white;font-family:Arial Black;}
+    .clock_bg{width:25px;height:46px;background:url('/img/social/img/watch_bg.png') no-repeat;padding-right:2px;}
+    .color_25{background-color:#252525;}
+    .so_id{font-family:dotum;font-size:12px;font-weight:bold;color:#333;}
+    .so_date{font-family:dotum;font-size:12px;color:#999;}
+
+
+    .graph{width:"231px;" height:"15px";
+    background:url('/img/social/img/graph_bg.gif') no-repeat scroll 0 0 transparent;overflow: hidden;}
+
+    .full{background:url('/img/social/img/percent_bar.gif') no-repeat scroll 0 0 transparent;
+    display:inline-block;margin:0px;padding:0px;}
+
+</style>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:25px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_05.gif}">
+    </div>
+
+    <div style="display:block;overflow:hidden;padding-top:15px;">
+        <div style="float:left;">
+            <div style="display: flex;">
+                <!-- 모든 a 태그를 나란히 배치 -->
+                <!-- 첫번째 탭 -->
+                <a th:href="@{/board/ev_main}">
+                    <img th:src="${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/ev_main')}"
+                         th:attr="data-normal=${currentPage.startsWith('/board/ev_main') || currentPage.startsWith('/board/ev_v') ? '/img/common/tab_event_01_over.gif' : '/img/common/tab_event_01.gif'}"
+                         data-hover="/img/common/tab_event_01_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 두번째 탭 -->
+                <a th:href="@{/board/review_main}">
+                    <img th:src="${currentPage.startsWith('/board/review_main') || currentPage.startsWith('/board/review_v') ? '/img/common/tab_event_02_over.gif' : '/img/common/tab_event_02.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/review_main')}"
+                         th:attr="data-normal=${currentPage.startsWith('/board/review_main') || currentPage.startsWith('/board/review_v') ? '/img/common/tab_event_02_over.gif' : '/img/common/tab_event_02.gif'}"
+                         data-hover="/img/common/tab_event_02_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 세번째 탭 -->
+                <a th:href="@{/board/winner_main}">
+                    <img th:src="${currentPage.startsWith('/board/winner_main') || currentPage.startsWith('/board/winner_v') ? '/img/common/tab_noti_03_over.gif' : '/img/common/tab_noti_03.gif'}"
+                         th:data-active="${currentPage.startsWith('/board/winner_main')}"
+                         data-normal="/img/common/tab_noti_03.gif"
+                         data-hover="/img/common/tab_noti_03_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+                <!-- 네번째 탭 -->
+                <a th:href="@{/product/social}">
+                    <img th:src="${currentPage.startsWith('/product/social') ? '/img/common/tab_noti_04_over.gif' : '/img/common/tab_noti_04.gif'}"
+                         th:data-active="${currentPage.startsWith('/product/social')}"
+                         data-normal="/img/common/tab_noti_04.gif"
+                         data-hover="/img/common/tab_noti_04_over.gif"
+                         onmouseover="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-hover')"
+                         onmouseout="if(this.getAttribute('data-active') !== 'true') this.src=this.getAttribute('data-normal')">
+                </a>
+            </div>
+        </div>
+        <div style="text-align:right;padding-bottom:5px;">
+            &nbsp;
+            <!--
+            <select name=""><option>제목</option>
+            <option>내용</option></select>
+            <input type="text" size="18" name="keyword" value="<?=$keyword?>" class="input_notice"></div>
+            --->&nbsp;
+        </div>
+
+        <div style="padding-bottom:10px;">
+            <div width="740">
+                <table width="740" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td>
+                            <table width="740" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td class="so_top" width="430">
+                                        <img src="/img/social/img/top_copy.gif" /> <b>[페이지 종료되었습니다.]</b>
+                                    </td>
+                                    <td class="so_top" width="210">&nbsp;</td>
+                                    <td class="so_top" width="100" align="right">
+                                        <table width="40" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="padding:0 5px;"><a href="javascript:goTwitter();"><img src="/img/social/img/twitter.png"  /></a></td>
+                                                <td><a href="javascript:goFaceBook();"><img src="/img/social/img/facebook.png" /></a></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="main_p"
+                            valign="bottom"
+                            width="740"
+                            height="360"
+                            :style="{
+                              backgroundImage: `url(${backgroundUrl})`,
+                              backgroundSize: 'cover'
+                            }">
+                            <!-- 퍼센트 말풍선 -->
+                            <div style="position:absolute;top:350px;left:230px; z-index:2000;
+                     width:108px;height:108px; text-align:center;
+                     font-family:verdana;
+                     background:url('/img/common/icon_save.png') no-repeat;
+                     color:black;padding-top:24px;letter-spacing:-2px;"
+                            >
+                                <span style="font-size:38px;font-weight:bold;">{{ rate }}</span>
+                                <span style="font-size:18px;">%</span>
+                            </div>
+
+                            <!-- 가격 -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td width="268">
+                                        <table border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="padding:0 7px 0px 0;">
+                                                    <img src="/img/social/img/pay01.png" width="41" height="12" />
+                                                </td>
+                                                <td style="padding:0 28px 0px 0;text-align:right;
+                               font-size:25px;color:#878988;vertical-align:top;
+                               text-decoration:line-through;"
+                                                >
+                                                {{ formatPrice(realPrice) }}<span class="te_do sz_18">원</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding:0 7px 10px 0;">
+                                                    <img src="/img/social/img/pay02.png" width="41" height="12" />
+                                                </td>
+                                                <td
+                                                        style="padding:0 28px 20px 0;text-align:right;
+                               font-size:32px;color:#f21d5e; vertical-align:top;"
+                                                >
+                                                    {{ formatPrice(gasaPrice) }}<span class="te_do sz_18">원</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+
+                                    <!-- 남은 시간 -->
+                                    <td align="right">
+                                        <table border="0" cellspacing="0" cellpadding="0" id="left_time">
+                                            <tr>
+                                                <td v-for="(digit, idx) in timeDigits" :key="idx" class="clock_bg" align="center">
+                                                    {{ digit }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="2"></td>
+                    </tr>
+                    <tr>
+                        <td class="color_25" height="135" style="padding:0 20px;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td width="268" style="font-size:12px;color:#ffffff;padding:0 0 5px 0;"><strong>0 명 이상 뭉치면 싸진다!</strong></td>
+                                    <td width="210">&nbsp;</td>
+                                    <td rowspan="4"><a onclick="javascript:CheckForm(form1);" style="cursor:hand;"><img src="/img/social/img/buy_btn.png" width="248" height="93" /></a></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="font-size:12px;color:#ffffff;padding-right:5px;">0</td>
+                                                <td width="231">
+                                                    <!--그래프-->
+                                                    <div class="graph">
+                                                        <p class="full" style="width:<?=$percent?>%">&nbsp;</p><!--퍼센트로 조절-->
+                                                    </div>
+                                                    <!--그래프-->
+                                                </td>
+                                                <td style="font-size:12px;color:#ffffff;padding-left:5px;">0</td>
+                                                </tr>
+                                            </table>
+
+                                        </td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td style="text-align:left;font-size:45px;color:#f21d5e;font-family:Arial Black;letter-spacing:-3px; vertical-align:top;" class="te_en te_b te_le">
+                                            0 &nbsp;<img src="/img/social/img/buy.png" width="98" height="33" />
+                                        <td>&nbsp;</td>
+                                    </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="10"></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:20px;border-top:5px #e7e7e7 solid;border-left:5px #e7e7e7 solid;border-right:5px #e7e7e7 solid;border-top:5px #e7e7e7 solid;border-bottom:5px #e7e7e7 solid;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom:20px;" colspan="2"><img src="/img/social/img/use_title.png" width="58" height="18" /></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" style="padding:5px;font-size:12px;color:#666666;font-family:Dutum;" width="50%">
+                                        <p>구매인원 충족시 할인된 가격에 제품 구매 가능!</p>
+                                        <p><strong>[교환 및 반품 안내]</strong><br />
+                                            제품 하자의 경우 7일 이내 업체부담 반품/교환가능<br />
+                                            단순 변심 반품시 왕복배송비 고객부담 환불가능</p>
+                                    </td>
+                                    <td valign="top" style="padding:5px;font-size:12px;color:#666666;font-family:Dutum;" width="50%">
+                                        구매제한: 1인 무제한 구매가능<br />
+                                        택배비용: 무료배송<br />
+                                        배송 방식 : 14:00 주문건 까지 당일 빠른 배송
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="20"></td>
+                    </tr>
+
+                    <!--탭시작-->
+                    <tr>
+                        <td id="01">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td width="140" style="border-top:2px solid #252525;border-bottom:1px solid #cccccc;"><a href="#01"><img src="/img/social/img/tab0102.gif" width="140" height="39" /></a></td>
+
+                                    <td width="140" background="/img/social/img/tab02.gif" style="border-top:2px solid #252525;border-bottom:1px solid #cccccc;cursor:pointer;" onclick="location.href('#02')" >
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="padding:0 0 0 90px;font-size:12px;color:#252525;font-family:Dutum"><strong>(0)</strong></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="border-top:2px solid #252525;border-bottom:1px solid #cccccc;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!--탭끝-->
+                    <tr>
+                        <td height="100%" style="padding:0 0 0 0px;" valign="top" v-html="processedDiscription"></td>
+                    </tr>
+                    <tr>
+                        <td height="100%" style="padding:0 0 0 0px;" valign="top"  v-html="processedBasongInfo" ></td>
+                    </tr>
+                    <tr>
+                        <td height="20"></td>
+                    </tr>
+
+                    <tr>
+                        <td  id="02">
+
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td width="140" style="border-top:2px solid #252525;border-bottom:1px solid #cccccc;"><a href="#01"><img src="/img/social/img/tab01.gif" width="140" height="39" /></a></td>
+                                    <td width="140" background="/img/social/img/tab0202.gif" style="border-top:2px solid #252525;border-bottom:1px solid #cccccc;cursor:pointer;" onclick="location.href('#02')">
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="padding:0 0 0 90px;font-size:12px;color:#fff;font-family:Dutum"><strong>(0)</strong></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="border-top:2px solid #252525;border-bottom:1px solid #cccccc;">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!-- 준비중
+        <style>
+
+            .notice {
+              padding: 20px 40px;
+              background: white;
+              border: 2px solid #ccc;
+              border-radius: 8px;
+              text-align: center;
+              box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            .notice h1 {
+              margin: 0;
+              font-size: 24px;
+              color: #333;
+            }
+            .notice p {
+              margin-top: 10px;
+              color: #666;
+            }
+        </style>
+        <br><br>
+        <div class="notice">
+            <h1>페이지 현재 준비중입니다.</h1>
+            <p>서비스가 곧 오픈될 예정입니다. 조금만 기다려 주세요!</p>
+        </div>
+        준비중태그--->
+    </div>
+</div>
+<script>
+new Vue({
+  el: "#con",
+  data: {
+    code: "",
+    bigImage: "",
+    rate: 0,
+    discription: null,
+    basongInfo: null,
+    realPrice: 0,
+    gasaPrice: 0,
+    timeDigits: [0,0,0,0,0,0,0],
+    myDomain: "https://img.debco.link/"
+  },
+  computed: {
+    backgroundUrl() {
+      return `https://img.debco.link/social/${this.code}/${this.bigImage}`;
+    },
+    processedDiscription() {
+      return this.replaceImagePath(this.discription);
+    },
+    processedBasongInfo() {
+      return this.replaceImagePath(this.basongInfo);
+    }
+
+  },
+  methods: {
+    formatPrice(value) {
+      return new Intl.NumberFormat().format(value);
+    },
+    replaceImagePath(content) {
+        if (!content) return ""; // null/undefined 안전 처리
+        return content.replace(
+            /http:\/\/image\.wisefood\.co\.kr\//g,
+            this.myDomain
+        );
+
+    },
+    fetchSocialData() {
+      axios.get("/api/product/social")
+        .then(res => {
+          const data = res.data || {};
+          this.code = data.code || "";
+          this.bigImage = data.bigImage || "";
+          this.rate = data.rate || 0;
+          this.realPrice = data.realPrice || 0;
+          this.gasaPrice = data.gasaPrice || 0;
+          this.timeDigits = data.timeDigits || [0,0,0,0,0,0,0];
+          this.discription = data.discription || "";
+        })
+        .catch(err => {
+          console.error("API 호출 실패:", err);
+        });
+    }
+  },
+  mounted() {
+    this.fetchSocialData();
+  }
+});
+</script>
+
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:20px;padding-top:20px;">
+        <img src="/img/common/tit_21.gif">
+    </div>
+    <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_j03.gif}"></div>
+    <div style="padding-bottom:30px;" id="MemberModify">
+        <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+            <tr><td colspan="2" height="1px" bgcolor="#82b644"></td></tr>
+            <tr>
+                <td class="tr_001" width="150px">이름</td>
+                <td class="td_001">{{loadData.name}}</td>
+            </tr>
+            <tr>
+                <td class="tr_002">아이디</td>
+                <td class="td_002">{{loadData.userid}}</td>
+            </tr>
+            <tr>
+                <td class="tr_002">이전 비밀번호</td>
+                <td class="td_002">
+                    <input class="input_mn" size="20"  type="password" name="His_Pass"  maxlength="30"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_002">변경할 비밀번호</td>
+                <td class="td_002">
+                    <input class="input_mn" size="20"  type="password" name="Edit_Pass"  maxlength="30"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_002">변경할 비밀번호 확인</td>
+                <td class="td_002">
+                    <input class="input_mn" size="20"  type="password" name="Edit_Pass1"  maxlength="30"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tr_002">비밀번호 힌트</td>
+                <td class="td_002">
+                    <select name="U_Pass_Q"  id="im" alt="비밀번호 찾기힌트를 입력하여 주세요" class="select">
+                        <option value="기억에 남는 추억의 장소는?">기억에 남는 추억의 장소는?</option>
+                        <option value="자신의 인생 좌우명은?">자신의 인생 좌우명은?</option>
+                        <option value="자신의 보물 제1호는?">자신의 보물   제1호는?</option>
+                        <option value="가장 기억에 남는 선생님 성함은?">가장 기억에 남는 선생님 성함은?</option>
+                        <option value="타인이 모르는 자신만의 신체비밀이 있다면?">타인이 모르는 자신만의 신체비밀이 있다면?</option>
+                        <option value="추억하고 싶은 날짜가 있다면?(예:1994/04/20)">추억하고 싶은 날짜가 있다면?(예:1994/04/20)</option>
+                        <option value="받았던 선물 중 기억에 남는 독특한 선물은?">받았던 선물 중 기억에 남는 독특한 선물은?</option>
+                        <option value="유년시절 가장 생각나는 친구 이름은?">유년시절 가장 생각나는 친구 이름은?</option>
+                        <option value="인상 깊게 읽은 책 이름은?">인상 깊게 읽은 책 이름은?</option>
+                        <option value="읽은 책 중에서 좋아하는 구절이 있다면?">읽은 책 중에서 좋아하는 구절이 있다면?</option>
+                        <option value="자신이 두번째로 존경하는 인물은?">자신이 두번째로 존경하는 인물은?</option>
+                        <option value="친구들에게 공개하지 않은 어릴 적 별명이 있다면?">친구들에게 공개하지 않은 어릴 적 별명이 있다면?</option>
+                        <option value="초등학교 때 기억에 남는 짝꿍 이름은?">초등학교 때 기억에 남는 짝꿍 이름은?</option>
+                        <option value="다시 태어나면 되고 싶은 것은?">다시 태어나면 되고 싶은 것은?</option>
+                        <option value="내가 좋아하는 캐릭터는?">내가 좋아하는 캐릭터는?</option>
+                    </select>
+                    <span class="te_gn sz_11 te_le" style="margin-left:10px;">*비밀번호를 찾을때사용되는 힌트를 선택해주세요</span></td>
+            </tr>
+            <tr>
+                <td class="tr_002">비밀번호 열쇠</td>
+                <td class="td_002"><input class="input_mn" size="20"  type="text" name="U_Pass_A"  maxlength="30"  alt="비밀번호 찾기열쇠를 입력하여 주세요" v-model="loadData.passwordAnswer" />
+                    <span class="te_gn sz_11 te_le" style="margin-left:10px;">*비밀번호 힌트의 답을 입력해 주세요</span></td>
+            </tr>
+            <tr>
+                <td class="tr_002">이메일</td>
+                <td class="td_002"><input size="6" name="Email1"  maxlength="30"  alt="이메일 주소를 입력하여 주십시요." v-model="Email1" class="input_mn"  style='ime-mode:disabled'/>
+                    @<input size="10" name="Email2"  maxlength="30"  alt="이메일 세부주소를 입력하여 주십시요."  v-model="Email2" class="input_mn"  style='ime-mode:disabled'/>&nbsp;&nbsp;
+                    <select name="lstMail" onchange="document.Modify.Email2.focus();document.Modify.Email2.value=document.Modify.lstMail[document.Modify.lstMail.selectedIndex].value;" class="select">
+                        <option selected="selected" value="">직접입력</option>
+                        <option value="naver.com">네이버</option>
+                        <option value="hanmail.net">한메일</option>
+                        <option value="hotmail.com">핫메일</option>
+                        <option value="hitel.net">하이텔</option>
+                        <option value="nate.com">네이트</option>
+                        <option value="hanafos.com">하나포스닷컴</option>
+                        <option value="empas.com">엠파스</option>
+                        <option value="korea.com">코리아닷컴</option>
+                        <option value="netian.com">네띠앙</option>
+                        <option value="yahoo.co.kr">야후</option>
+                        <option value="hanmir.com">한미르</option>
+                    </select>
+
+                    <span class="te_gn sz_11 te_le" style="margin-left:10px;">한메일은 발송이 되지않을 수 있습니다</span></td>
+            </tr>
+            <tr>
+                <td class="tr_002">주민번호</td>
+                <td class="td_002">{{loadData.regNumber1}}-*******</td>
+            </tr>
+            <tr>
+                <td class="tr_002">생년월일</td>
+                <td class="td_002">
+                    <select class="select" name="Birth_year">
+                    </select>
+                    년
+                    <select name="Birth_month" class="select">
+                        <option value="<?=$Birth[1]?>"><?=$Birth[1]?></option>
+                        <option value=01>01</option>
+                        <option value=02>02</option>
+                        <option value=03>03</option>
+                        <option value=04>04</option>
+                        <option value=05>05</option>
+                        <option value=06>06</option>
+                        <option value=07>07</option>
+                        <option value=08>08</option>
+                        <option value=09>09</option>
+                        <option value=10>10</option>
+                        <option value=11>11</option>
+                        <option value=12>12</option>
+                    </select>
+                    월
+                    <select name="Birth_day" class="select">
+                    </select>
+                    일&nbsp;&nbsp;
+                    <input value="S" checked="checked" type="radio" name="Birth_Ext"  />
+                    양력
+                    <input value="L" type="radio" name="Birth_Ext" />
+                    음력
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_002">이동전화</td>
+                <td class="td_002">
+                    <select class="select" v-model="Mobile1" name="Mobile_1">
+                        <option value="010">010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="018">018</option>
+                        <option value="019">019</option>
+                    </select>-
+                    <input class="input_mn" onkeydown="handlerNum()" id="im4" alt="이동전화 입력바랍니다" maxlength="4" size="4" type="text" name="Mobile_2"  v-model="Mobile2"/>
+                    -
+                    <input class="input_mn" onkeydown="handlerNum()" id="im4" alt="이동전화 입력바랍니다" maxlength="4" size="4" type="text" name="Mobile_3"  v-model="Mobile3"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_002">주소</td>
+                <td class="td_002"><input name="Zip1" type="text" class="input_mn" size="4" v-model="Zip1" readonly  id="im"  alt="우편번호를 입력바랍니다"  />-<input name="Zip2" type="text" class="input_mn" size="4" v-model="Zip2"  readonly id="im"  alt="우편번호를 입력바랍니다" />
+                    <a href="javascript:Zip_Search('../inc/zip.php?Page=Modify')"><img src="/img/common/btn_addr.gif" align="absmiddle"style="margin-left:5px;"></a><br>
+                    <input class="input_mn" size="35" name="Address" type="text" readonly  id="im"  alt="주소를 입력바랍니다" v-model="loadData.address"  style="margin-top:5px;"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tr_002">상세주소</td>
+                <td class="td_002"><input class="input_mn" size="60" name="Address_Ext" type="text" id="im"  alt="세부주소를 입력바랍니다"  v-model="loadData.addressDetail" />
+                    <span class="te_gn sz_11 te_le" style="margin-left:10px;">상세주소를 입력해주세요.</span></td>
+            </tr>
+            <tr>
+                <td class="tr_002">연락처</td>
+                <td class="td_002">
+                    <select name="Phone_1" v-model="Phone1" class="select">
+                        <option value="02">02</option>
+                        <option value="031">031</option>
+                        <option value="032">032</option>
+                        <option value="033">033</option>
+                        <option value="041">041</option>
+                        <option value="042">042</option>
+                        <option value="043">043</option>
+                        <option value="051">051</option>
+                        <option value="052">052</option>
+                        <option value="053">053</option>
+                        <option value="054">054</option>
+                        <option value="055">055</option>
+                        <option value="061">061</option>
+                        <option value="062">062</option>
+                        <option value="063">063</option>
+                        <option value="064">064</option>
+                        <option value="070">070</option>
+                    </select>
+                    - <input class="input_mn" onkeydown="handlerNum()" id="im" alt="연락처를 입력바랍니다" maxlength="4" size="4" name="Phone_2"  v-model="Phone2" />	- <input class="input_mn" onkeydown="handlerNum()" id="im" alt="연락처를 입력바랍니다" maxlength="4" size="4" name="Phone_3" v-model="Phone2" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="padding-bottom:8px;"><img src="/img/common/tit_j04.gif"><b  style="font-size:12px;color:#888888">[부가정보를 입력하시면 300포인트 추가 지급됩니다.]</b></div>
+    <div style="padding-bottom:20px;">
+        <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+            <tr><td colspan="2" height="2px" bgcolor="#cd8f4c"></td></tr>
+            <tr><td colspan="2" class="td_004">
+                <input class="" type="checkbox" name="etc"  value="y"  onclick="member_join_etccheck(this,this.value);"  ><span class="sz_11 te_le" style="margin-left:10px;"><b>추가정보</b>를 입력합니다.</span>
+            </td></tr>
+            <tr>
+                <td class="tr_004" width="210px">직업</td>
+                <td class="td_004">
+                    <select class="select"  name="Job"  id="im2"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_004">결혼여부</td>
+                <td class="td_004">
+                    <input type="radio" name="wedding" value="n"  style="border:0">미혼 &nbsp;
+                    <input type="radio" name="wedding" value="y"  style="border:0">기혼
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_004">건강식품구매주기</td>
+                <td class="td_004">
+                    <input type="radio" name="gg_gomae" onclick="chkRadio(this.value);"  value="월 1~2회"  style="border:0">월 1~2회 &nbsp;
+                    <input type="radio" name="gg_gomae" onclick="chkRadio(this.value);"  value="6개월 1~2회"  style="border:0;margin-left:10px;"> 6개월 1~2회&nbsp;
+                    <input type="radio" name="gg_gomae" onclick="chkRadio(this.value);"  value="1년 1~2회"  style="border:0;margin-left:10px;"> 1년 1~2회&nbsp;
+                    <input type="radio" name="gg_gomae" onclick="member_join_etc_txt2(this);"  value="기타"  style="border:0;margin-left:10px;"> 기타(직접입력)&nbsp;
+                    <input type="text" class="input_mn" size="6" name="gg_gomae_txt"  maxlength="30" style="margin-left:2px;">
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_004">가족구성</td>
+                <td class="td_004">
+                    <input type="radio"  value="1인가구"  name="family" style="border:0"  > 1인가구</input>
+                    <input type="radio"  value="1대가족" name="family" style="margin-left:10px;border:0" > 1대가족</input>
+                    <input type="radio"  value="2대가족" name="family" style="margin-left:10px;border:0" > 2대가족</input>
+                    <input type="radio"  value="3대가족" name="family" style="margin-left:10px;border:0">> 3대가족</input>
+                </td>
+
+            </tr>
+            <tr>
+                <td class="tr_004">자녀여부</td>
+                <td class="td_004">
+                    <input type="radio" value="기혼자녀"  name="children"  style="border:0"  > 기혼자녀</input>
+                    <input type="radio" value="미혼 자녀"  name="children" style="margin-left:10px;border:0" > 미혼 자녀</input>
+                    <input type="radio" value="취학전 자녀"  name="children" style="margin-left:10px;border:0" > 취학전 자녀</input>
+                    <input type="radio" value="취학 자녀"  name="children" style="margin-left:10px;border:0" > 취학 자녀</input>
+
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_004">현재 복용중이거나 복용해온 건강식품<br>(중복선택가능)</td>
+                <td class="td_004">
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tr>
+                            <td><input style="border:0"  value="면역" type="checkbox" name="hs_prod[]" > 면역</input></td>
+                            <td><input style="margin-left:10px;border:0" value="눈" type="checkbox" name="hs_prod[]" /> 눈</input></td>
+                            <td><input style="margin-left:10px;border:0" value="피부" type="checkbox" name="hs_prod[]" /> 피부</td>
+                            <td><input style="margin-left:10px;border:0" value="혈당" type="checkbox" name="hs_prod[]" /> 혈당</td>
+                            <td><input style="margin-left:10px;border:0" value="혈압" type="checkbox" name="hs_prod[]" /> 혈압</td>
+                            <td><input style="margin-left:10px;border:0" value="갱년기" type="checkbox" name="hs_prod[]"/> 갱년기</td>
+                            <td><input style="margin-left:10px;border:0" value="관절" type="checkbox" name="hs_prod[]" /> 관절</td>
+                            <td><input style="margin-left:10px;border:0" value="혈액순환" type="checkbox" name="hs_prod[]" /> 혈액순환</td>
+                        </tr>
+                        <tr>
+                            <td height="30px"><input style="border:0" value="전립선" type="checkbox" name="hs_prod[]"/> 전립선</td>
+                            <td><input style="margin-left:10px;border:0" value="영양보충" type="checkbox" name="hs_prod[]"/> 영양보충</td>
+                            <td><input style="margin-left:10px;border:0" value="다이어트" type="checkbox" name="hs_prod[]" /> 다이어트</input></td>
+                            <td><input style="margin-left:10px;border:0" value="피로회복" type="checkbox" name="hs_prod[]" /> 피로회복</input></td>
+                            <td><input style="margin-left:10px;border:0" value="숙취해소" type="checkbox" name="hs_prod[]" /> 숙취해소</td>
+                            <td><input style="margin-left:10px;border:0" value="어린이" type="checkbox" name="hs_prod[]" /> 어린이</td>
+                            <td colspan="2"><input style="margin-left:10px;border:0" onclick="member_join_etc_txt(this);" value="기타(직접입력)" type="checkbox" name="hs_prod[]" > 기타</input>
+                                <input class="input_mn" style="margin-left:2px;margin-left:10px;border:0" maxlength="30" size="8" type="text" name="hs_prod_txt"  />
+                            </td>
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="tr_004">관심있는 건강식품 목록<br>(중복선택가능)</td>
+                <td class="td_004">
+                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tr>
+                            <td><input style="border:0" value="면역" type="checkbox" name="hs_prod2[]"> 면역</input></td>
+                            <td><input style="margin-left:10px;border:0" value="눈" type="checkbox" name="hs_prod2[]" /> 눈</input></td>
+                            <td><input style="margin-left:10px;border:0" value="피부" type="checkbox" name="hs_prod2[]" /> 피부</td>
+                            <td><input style="margin-left:10px;border:0" value="혈당" type="checkbox" name="hs_prod2[]" /> 혈당</td>
+                            <td><input style="margin-left:10px;border:0" value="혈압" type="checkbox" name="hs_prod2[]"  /> 혈압</td>
+                            <td><input style="margin-left:10px;border:0" value="갱년기" type="checkbox" name="hs_prod2[]" /> 갱년기</td>
+                            <td><input style="margin-left:10px;border:0" value="관절" type="checkbox" name="hs_prod2[]" /> 관절</td>
+                            <td><input style="margin-left:10px;border:0" value="혈액순환" type="checkbox" name="hs_prod2[]"/> 혈액순환</td>
+                        </tr>
+                        <tr>
+                            <td height="30px"><input style="border:0" value="전립선" type="checkbox" name="hs_prod2[]" /> 전립선</td>
+                            <td><input style="margin-left:10px;border:0" value="영양보충" type="checkbox" name="hs_prod2[]" /> 영양보충</td>
+                            <td><input style="margin-left:10px;border:0" value="다이어트" type="checkbox" name="hs_prod2[]" /> 다이어트</input></td>
+                            <td><input style="margin-left:10px;border:0" value="피로회복" type="checkbox" name="hs_prod2[]" /> 피로회복</input></td>
+                            <td><input style="margin-left:10px;border:0" value="숙취해소" type="checkbox" name="hs_prod2[]" /> 숙취해소</td>
+                            <td><input style="margin-left:10px;border:0" value="어린이" type="checkbox" name="hs_prod2[]" /> 어린이</td>
+                            <td colspan="2"><input style="margin-left:10px;border:0" onclick="mem_join_prod2(this);" value="기타(직접입력)" type="checkbox" name="hs_prod2[]"> 기타</input>
+                                <input class="input_mn" style="margin-left:2px;margin-left:10px;border:0" maxlength="30" size="8" type="text" name="hs_prod2_txt" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_004">건강식품 주요구매처</td>
+                <td class="td_004" style="line-height:25px;">
+                    <input type="checkbox" style="border:0" name="place[]" value="온라인"   >온라인&nbsp;&nbsp;
+                    <input type="checkbox" style="margin-left:10px;border:0" name="place[]" value="약국"   >약국&nbsp;&nbsp;
+                    <input type="checkbox" style="margin-left:10px;border:0" name="place[]" value="편의점"    >편의점&nbsp;&nbsp;
+                    <input type="checkbox" style="margin-left:10px;border:0" name="place[]" value="건강식품"   >건강식품&nbsp;&nbsp;
+                    <input type="checkbox" name="place[]" value="직영매장"   >직영매장&nbsp;&nbsp;
+                    <input type="checkbox" style="margin-left:10px;border:0" name="place[]" value="기타(직접입력)" onclick="mem_place_where(this);"  >기타(직접입력)&nbsp;
+                    <input type="text"  style="margin-left:2px;border:0"  size="6" name="place_txt" maxlength="30"  class="select">
+                </td>
+            </tr>
+            <tr>
+                <td class="tr_004">추천인</td>
+                <td class="td_004" style="line-height:25px;">
+                    <input type="text"  name="your_id" maxlength="20" class="input_mn" size="20"><span class="te_gn sz_11 te_le" style="margin-left:10px;">추천인의 아이디를 입력해주세요</span>
+                    <b>[추천인에게 500포인트가 지급됩니다.]</b>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="text-align:center;"><a href="javascript:;"  onclick="javascript:CheckForm_M(Modify)";><img src="/img/common/btn_modify.gif" style="margin-right:5px;"></a><a href="javascript:history.go(-1);"><img src="/img/common/btn_cancel_02.gif"></a>
+    </div>
+</div>
+</form>
+<script>
+    new Vue({
+      el: "#MemberModify",
+      data: {
+        loadData: [],
+        Email1: "",
+        Email2: "",
+        Zip1: "",
+        Zip2: "",
+        Phone1: "",
+        Phone2: "",
+        Phone3: "",
+        Mobile1: "010",
+        Mobile2: "",
+        Mobile3: "",
+        errorMessage: ""
+      },
+      async mounted() {
+        try {
+         const response = await axios.get("/api/member/me", {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("accessToken")
+            }
+          });
+          this.loadData = response.data;
+          const email_array = this.loadData.email.split("@");
+          this.Email1 = email_array[0];
+          this.Email2 = email_array[1];
+          const zip_array = this.loadData.zipCode.split("-");
+          this.Zip1 = zip_array[0];
+          this.Zip2 = zip_array[1];
+
+          const mobile_array = this.loadData.mobile.split("-");
+          this.Mobile1 = mobile_array[0];
+          this.Mobile2 = mobile_array[1];
+          this.Mobile3 = mobile_array[2];
+
+          const phone_array = this.loadData.phone.split("-");
+          this.Phone1 = phone_array[0];
+          this.Phone2 = phone_array[1];
+          this.Phone3 = phone_array[2];
+
+           console.log(this.loadData);
+            console.log(zip_array);
+        } catch (error) {
+          console.error("회원정보 조회 실패:", error);
+          this.errorMessage = "회원정보를 불러올 수 없습니다.";
+        }
+      }
+    });
+</script>
+
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>

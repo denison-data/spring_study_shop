@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="subcontents" >
+    <div  id="middleHeader">
+    <form method="get" :action="`category?Cat_Content=${catContent}`">
+    <input type="hidden" name="Cat_Content" :value="catContent">
+    <table cellspacing="0"cellpadding="0" border="0" height="185px" valign="top">
+        <tr><td style="padding-top:3px;">
+            <table cellspacing="0"cellpadding="0" border="0" height="153px">
+                <tr>
+                    <td style="padding-right:25px;"><img th:src="@{/img/common/tx_age.png}"></td>
+                    <td>
+                        <table cellspacing="0"cellpadding="0" border="0" th:style="'background:url('+@{/img/common/line_05.gif}+') no-repeat;'">
+                            <tr><td  style="padding-left:20px;">
+                                <div><img th:src="@{/img/common/btn_age_01.png}"></div>
+                                <div class="te_b te_na sz_13 te_white" style="text-align:center;"><input type="radio" name="dv" value="W_A_cate3" v-model="selectedDv"> 유아</div>
+                            </td></tr>
+                        </table>
+                    </td>
+                    <td style="padding-left:15px;">
+                        <div><img th:src="@{/img/common/btn_age_02.png}"></div>
+                        <div class="te_b te_na sz_13 te_white" style="text-align:center;"><input type="radio" name="dv" value="W_A_cate4" v-model="selectedDv"> 청년</div>
+                    </td>
+                    <td style="padding-left:15px;">
+                        <div><img th:src="@{/img/common/btn_age_03.png}"></div>
+                        <div class="te_b te_na sz_13 te_white" style="text-align:center;"><input type="radio" name="dv" value="W_A_cate5" v-model="selectedDv"> 장년 가족</div>
+                    </td>
+                    <td style="padding-left:15px;padding-right:25px;">
+                        <div><img th:src="@{/img/common/btn_age_04.png}"></div>
+                        <div class="te_b te_na sz_13 te_white" style="text-align:center;"><input type="radio" name="dv" value="W_A_cate6" v-model="selectedDv"> 노년</div>
+                    </td>
+                    <td>
+                        <table cellspacing="0"cellpadding="0" border="0" style="background:url(/img2/line_05.gif) no-repeat;">
+                            <tr><td style="padding-left:30px;">
+                                <button type="submit" style="border:none; background:none; cursor:pointer;">
+                                    <img th:src="@{/img/common/btn_age.png}" alt="검색">
+                                </button>
+
+                            </td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td></tr>
+    </table>
+</form>
+    <script>
+new Vue({
+  el: '#middleHeader',
+  data() {
+    return {
+      catContent: document.getElementById('middleHeader').dataset.catContent || 'W_Age',
+      selectedDv: ''
+    };
+  },
+  mounted() {
+    this.selectedDv = new URLSearchParams(window.location.search).get('dv') || '';
+
+    console.log("selectedDv 값:", this.selectedDv);
+    console.log("타입:", typeof this.selectedDv);
+  }
+
+});
+
+
+    </script>
+    </div>
+</th:block>

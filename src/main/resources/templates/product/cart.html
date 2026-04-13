@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- top.html의 head 부분 include -->
+<head th:replace="layout/header :: header"></head>
+<div th:replace="layout/left :: left"></div>
+<div id="con">
+    <div style="padding-bottom:15px;padding-top:20px;">
+        <img th:src="@{/img/common/tit_02.gif}">
+    </div>
+
+    <div v-if="loading" style="text-align:center; padding:20px;">
+        <img src="/img/common/loading.gif" alt="로딩중" width="50"><br>
+        데이터 로딩중입니다...
+    </div>
+
+    <div style="padding-bottom:30px;"><img th:src="@{/img/common/shopping_01.gif}"></div>
+    <div style="padding-bottom:8px;"><img th:src="@{/img/common/tit_c01.gif}"></div>
+    <div style="padding-bottom:10px;">
+        <table cellspacing="0"cellpadding="0" border="0" style="width:100%;">
+            <tr>
+                <td class="tr_01" align="left"colspan="2">상세/옵션정보</td>
+                <td class="tr_01" align="left">수량</td>
+                <td class="tr_01" align="left">정상가격</td>
+                <td class="tr_01" align="left">할인가격</td>
+                <td class="tr_01" align="left">결제가격</td>
+                <td class="tr_01" align="left">배송비</td>
+                <td class="tr_01" align="left">주문</td>
+            </tr>
+            <tr v-if="cartItems.length === 0">
+                <td colspan="8" class="td_01" align="center">조회된 데이터가 없습니다.</td>
+            </tr>
+            <template v-for="item in cartItems" :key="item.cart.cno">
+                <tr>
+                    <!-- 상품 이미지 -->
+                    <td class="td_01" align="left" width="50px">
+                        <a :href="'/product/detail?code=' + item.productDetail.code">
+                            <img :src="'/img/product/' + item.productDetail.code + '/' + item.productDetail.smallPicture"
+                                 border="0" width="50" height="50">
+                        </a>
+                    </td>
+
+                    <!-- 상품명 + 옵션명 -->
+                    <td class="td_01" align="left" style="line-height:16px;">
+                        <a :href="'/product/detail?code=' + item.productDetail.code">
+                            [{{ vendorName }}]<br>
+                            {{ item.productDetail.name }}<br>
+                            {{ getOptionName(item.productDetail.option_array, item.cart.optionNo) }}
+                        </a>
+                    </td>
+
+                    <!-- 수량 입력 -->
+                    <td class="td_01" align="center">
+                        <input type="text" class="input_mn" size="4"
+                               v-model="item.cart.quantity"
+                               @keydown="handlerNum">
+                        <br>
+                        <a href="javascript:void(0)" @click="updateQuantity(item)">
+                            <img src="/img/common/btn_cha.gif" style="margin-top:5px;">
+                        </a>
+                    </td>
+
+                    <!-- 원가 * 수량 -->
+                    <td class="td_01" align="center">
+                      <span class="te_en">
+                        {{ formatPrice(getOptionPrice(item.productDetail.option_array, item.cart.optionNo) * item.cart.quantity) }}
+                      </span> 원
+                    </td>
+
+                    <!-- 할인 -->
+                    <td class="td_01" align="center">
+                        <span class="te_en"> {{ formatPrice(getDiscountAmount(item)) }} 원</span>
+                        <p><span class="te_gn sz_11" style="margin-top:10px;padding:2px; border:1px solid #b7d166;">이벤트할인</span></p>
+                    </td>
+
+                    <!-- 최종가 -->
+                    <td class="td_01" align="center">
+                      <span class="te_b te_en sz_15 te_gn">
+                        {{ formatPrice(getOptionPrice(item.productDetail.option_array, item.cart.optionNo) * item.cart.quantity) }}
+                      </span> 원
+                    </td>
+
+                    <!-- 장바구니 메뉴 아이콘 -->
+                    <td class="td_01" align="center">
+                        <img src="/img/common/cart_mu.gif">
+                    </td>
+
+                    <!-- 삭제 버튼 -->
+                    <td class="td_01" align="center">
+                        <a href="javascript:void(0)" @click="removeCart(item.cart)">
+                            <img src="/img/common/btn_del01.gif" style="margin-top:5px;">
+                        </a>
+                    </td>
+                </tr>
+            </template>
+
+        </table>
+    </div>
+
+    <div style="padding-bottom:30px;">
+    </div>
+
+    <div style="text-align:center;">
+        <!-- 주문 버튼 -->
+        <template v-if="cart_total !== 0">
+            <a v-if="!isLoggedIn" href="#" @click="checkForm">
+                <img src="/img/common/btn_order.gif" style="margin-right:5px;">
+            </a>
+            <a v-else href="/order">
+                <img src="/img/common/btn_order.gif" style="margin-right:5px;">
+            </a>
+        </template>
+
+        <!-- 쇼핑 계속하기 버튼 -->
+        <a href="/">
+            <img src="/img/common/btn_shopping.gif">
+        </a>
+    </div>
+
+</div>
+<script>
+    new Vue({
+      el: '#con',
+      data: {
+        cartItems: [],
+        cart_total: 0,
+        loading: true,
+        isLoggedIn: false,  // 로그인 여부 (세션 체크)
+        vendorName: '와이즈푸드' // 필요시 동적으로 변경 가능
+      },
+      created() {
+        fetch('/api/product/shopping_cart')
+          .then(res => res.json())
+          .then(data => {
+            this.cartItems = data;
+            this.cart_total = data.length;
+            this.isLoggedIn = Boolean(!!localStorage.getItem("accessToken"));
+            this.loading = false;
+            console.log(this.cartItems);
+          });
+      },
+      methods: {
+        checkForm() {
+            console.log("checked");
+            alert("포트폴리오 페이지입니다.\n 더이상 진행할 수 없습니다. (관리자에게 문의요망)");
+            return false;
+        },
+        getOptionName(options, optionNo) {
+          const opt = options.find(o => o.optionNo === optionNo);
+          return opt ? opt.optionName : '';
+        },
+        getOptionPrice(options, optionNo) {
+          const opt = options.find(o => o.optionNo === optionNo);
+          return opt ? opt.memberPrice : 0;
+        },
+        getOptionRealPrice(options, optionNo) {
+          const opt = options.find(o => o.optionNo === optionNo);
+          return opt ? opt.realPrice : 0;
+        },
+        getDiscountAmount(item) {
+            const normalPrice = this.getOptionRealPrice(item.productDetail.option_array, item.cart.optionNo) * item.cart.quantity;
+            const salePrice   = this.getOptionPrice(item.productDetail.option_array, item.cart.optionNo) * item.cart.quantity;
+
+            return normalPrice - salePrice; // ✅ 할인된 금액 차이
+        },
+        formatPrice(value) {
+          return new Intl.NumberFormat().format(value);
+        },
+        updateQuantity(item) {
+          // 수량 업데이트 API 호출
+          console.log("수량 변경:", item.cart.cno, item.cart.quantity);
+          fetch(`/api/product/shopping_cart/${item.cart.cno}/quantity`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ quantity: item.cart.quantity }) // ✅ body 추가
+          })
+          .then(res => {
+            if (!res.ok) throw new Error("수량 변경 실패");
+            return res.json();
+          })
+          .then(data => {
+            console.log("수량 업데이트 성공:", data);
+            // 필요하면 this.cartItems 갱신
+          })
+          .catch(err => {
+            console.error(err);
+            alert("수량 변경 중 오류가 발생했습니다.");
+          });
+
+        },
+        removeCart(cart) {
+          // 삭제 API 호출
+          console.log("삭제:", cart.cno);
+          fetch(`/api/product/shopping_cart/${cart.cno}`, {
+            method: 'DELETE'
+          })
+          .then(res => {
+            if (!res.ok) throw new Error("삭제 실패");
+            this.cartItems = this.cartItems.filter(item => item.cart.cno !== cart.cno);
+            this.cart_total = this.cartItems.length;
+          })
+          .catch(err => {
+            console.error(err);
+            alert("삭제 중 오류가 발생했습니다.");
+          });
+        },
+        handlerNum(event) {
+          if (!/[0-9]/.test(event.key)) {
+            event.preventDefault();
+          }
+        }
+      }
+    });
+</script>
+
+<div th:replace="layout/bottom :: bottom"></div>
+</body>
+</html>
