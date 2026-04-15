@@ -102,6 +102,33 @@ public class ProductApiController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<ProductDetailDto>> searchProduct(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "16") int size,
+            @RequestParam(defaultValue = "id,DESC") String sort
+    ) {
+        ///search?keyword=테스트 로하면 됨
+        log.info("search 조회 관련 - keyword {}", keyword);
+
+        String[] sortParams = sort.split(",");
+        String sortField = sortParams[0];
+        Sort.Direction direction = sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, sortField));
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return ResponseEntity.ok(PageResponse.of(Page.empty(pageable)));
+        }
+
+        Page<ProductDetailDto> products = productService.searchProduct(keyword, pageable);
+        PageResponse<ProductDetailDto> response = PageResponse.of(products);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/product_category/{keyword}")
     public ResponseEntity<PageResponse<ProductDetailDto>> getProductsByCategory(
             @PathVariable String keyword,

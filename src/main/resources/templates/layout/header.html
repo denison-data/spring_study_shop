@@ -37,7 +37,7 @@
 <div id="wrapper">
     <div id="box">
         <div id="header"  >
-            <form method="get" action="/Search" onsubmit="return checkd()" name="formcs1">
+            <form method="get" action="/search" onsubmit="return checkd()" name="formcs1">
                 <table width="100%" cellspacing="0"cellpadding="0" border="0">
                     <tr><td colspan="2" height="5px;"></td></tr>
                     <tr>
@@ -81,7 +81,7 @@
                         <a th:href="@{/product/cart}" class="topmn">장바구니</a>
 
                         <img th:src="@{/img/common/line.gif}" alt="line">
-                            <input type="text" name= "SearchWord" style="width:130px;border-radius:1px;background:none;-webkit-appearance:none;font-size:11px; color:#90a522; background-color:white; border:1px solid #b6b6b6;padding:3px;letter-spacing:-1px;font-weight:bold;" value="" >
+                            <input type="text" name= "keyword" style="width:130px;border-radius:1px;background:none;-webkit-appearance:none;font-size:11px; color:#90a522; background-color:white; border:1px solid #b6b6b6;padding:3px;letter-spacing:-1px;font-weight:bold;" value="" >
                             <input type="image"  th:src="@{/img/common/btn_sear.gif}" align="absmiddle"style="margin-left:2px;margin-bottom:1px;"></a>
                             <img th:src="@{/img/common/line.gif}">
                             <a class="topmenu blue" href="#" onClick="{window.external.AddFavorite ('http://www.wisefood.co.kr','::건강지킴이 와이즈푸드::')}" ><img src="/img/common/btn_bookmk.gif">

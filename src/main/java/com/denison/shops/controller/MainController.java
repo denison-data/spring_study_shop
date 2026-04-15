@@ -45,7 +45,26 @@ public class MainController {
         // 3. 메인 레이아웃 반환
         return "index";
     }
+    @GetMapping("/search")
+    public String shopSearch(Model model,  @RequestParam(required = false, defaultValue = "search") String page, @RequestParam(required = false)  String catContent) {
+        // 1. 어떤 컨텐츠를 보여줄지 결정
+        String contentTemplate = Constants.determineContentTemplate(page, catContent);
 
+        // 2-1. 모델에 추가
+        model.addAttribute("contentTemplate", contentTemplate);
+        model.addAttribute("currentPage", page);
+
+        // 2-2. ✅ Service에서 키워드 가져와서 직접 추가
+        List<Map<String, Object>> keywords = keywordService.getMainKeywords();
+        model.addAttribute("commonKeywords", keywords);
+
+        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "no"));
+        Page<NoticeDto> notices = boardService.getNoticeLists(pageable, null, true, null);
+        model.addAttribute("commonNotices", notices);
+        // 3. 메인 레이아웃 반환
+        return "product/search";
+
+    }
     @GetMapping("/best/main")
     public String bestMain(Model model, @RequestParam(required = false, defaultValue = "best/index") String page, @RequestParam(required = false) String catContent) {
         // 1. 어떤 컨텐츠를 보여줄지 결정
