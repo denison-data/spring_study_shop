@@ -109,6 +109,47 @@ public class ProductService {
         }
 
     }
+
+    public Page<ProductDetailDto> searchProduct(String keyword, Pageable pageable) {
+        log.info("검색 키워드 : {} , 페이지스 : {}", keyword, pageable);
+        Page<Product> productPage = productRepository.findByNameContainingAndDelFlagNotAndDisplay(keyword, "y", "y", pageable);
+        List<ProductDetailDto> dtoList = productPage.getContent().stream()
+                .map(product -> {
+                    // 상품별 옵션 조회
+                    List<GoodOption> options = goodOptionRepository.findByProductIdAndIngFlag(product.getId(), "y");
+
+                    // 엔티티 옵션 → DTO 옵션 변환
+                    List<ProductOptionDto> optionDtos = options.stream()
+                            .map(option -> ProductOptionDto.builder()
+                                    .id(option.getGeneratedId())
+                                    .optionName(option.getOptionName())
+                                    .optionA(option.getOptionA())
+                                    .guestPrice(option.getGuestPrice())
+                                    .memberPrice(option.getMemberPrice())
+                                    .silverPrice(option.getSilverPrice())
+                                    .realPrice(option.getRealPrice())
+                                    .ingFlag(option.getIngFlag())
+                                    .rate(option.getRate())
+                                    .optionNo(option.getOptionNo())
+                                    .build())
+                            .toList();
+
+                    // ProductDetailDto 생성
+                    return ProductDetailDto.builder()
+                            .id(product.getId())
+                            .code(product.getCode())
+                            .name(product.getName())
+                            .smallPicture(product.getSmallPicture())
+                            .middlePicture(product.getMiddlePicture())
+                            .category_code(product.getCategoryCode())
+                            .option_array(optionDtos) // ✅ 변환된 DTO 옵션 리스트 포함
+                            .build();
+                })
+                .toList();
+
+        return new PageImpl<>(dtoList, pageable, productPage.getTotalElements());
+
+    }
     public Page<ProductDetailDto> getProductsByCategoryKeyword(String keyword, String dv, Pageable pageable) {
         // 1. 카테고리 조회 (delFlag=N 조건)
         if ("W_Feat".equals(keyword.trim())) {

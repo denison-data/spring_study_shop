@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/member/modify").authenticated()
-                    .antMatchers("/", "/index.html", "/libs/**", "/img/**", "/login","/best/**").permitAll() // 정적 리소스
+                    .antMatchers("/", "/index.html", "/libs/**", "/img/**", "/login","/best/**","/search*").permitAll() // 정적 리소스
                     .antMatchers("/member/**").permitAll() // 로그인/회원가입만 허용
                     .antMatchers("/api/auth/login").permitAll() // 로그인만 허용
                     .antMatchers("/api/board/**", "/api/product/**").permitAll()          // 게시판 전체 허용

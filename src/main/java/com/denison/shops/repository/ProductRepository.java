@@ -73,5 +73,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
 // ✅ 이름으로 검색 (삭제되지 않은 상품)
-    // List<Product> findByNameContainingAndDelFlagNot(String name, String delFlag);
+     Page<Product> findByNameContainingAndDelFlagNotAndDisplay(String name, String delFlag, String Display,Pageable pageable);
 }
